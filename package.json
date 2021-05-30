@@ -1,0 +1,25 @@
+{
+  "name": "ethereum_max",
+  "version": "1.0.0",
+  "description": "Ethereum Max, an ERC20 implementation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "emax"
+  ],
+  "author": "EthereumMax",
+  "license": "MIT",
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.1.0",
+    "@openzeppelin/truffle-upgrades": "^1.7.0",
+    "solc": "^0.8.4",
+    "truffle": "^5.1.65",
+    "truffle-flattener": "^1.5.0",
+    "truffle-hdwallet-provider": "^1.0.17"
+  },
+  "devDependencies": {
+    "ganache-cli": "^6.12.2"
+  }
+}
