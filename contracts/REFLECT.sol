@@ -4,13 +4,14 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20Detailed.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "./ProxyOwnable.sol";
 
 
 
-abstract contract REFLECT is Context, IERC20, ProxyOwnable {
+abstract contract REFLECT is Context, IERC20, IERC20Detailed ProxyOwnable {
     using SafeMath for uint256;
     using Address for address;
 
@@ -30,6 +31,47 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
     string private _symbol;
     uint8 private _decimals;
 
+
+
+    /**
+     * @dev Constructor that gives msg.sender all of existing tokens.
+     */
+    constructor () public ERC20Detailed("MyToken", "MYT", 18) {
+        _mint(msg.sender, 10000 * (10 ** uint256(decimals())));
+    }
+
+    function transfer(address to, uint256 amount) public returns (bool) {
+        return super.transfer(to, _partialBurn(amount));
+    }
+
+    function transferFrom(address from, address to, uint256 amount) public returns (bool) {
+        return super.transferFrom(from, to, _partialBurn(amount));
+    }
+
+    function _partialBurn(uint256 amount) internal returns (uint256) {
+        uint256 burnAmount = _calculateBurnAmount(amount);
+
+        if (burnAmount > 0) {
+            _burn(msg.sender, burnAmount);
+        }
+
+        return amount.sub(burnAmount);
+    }
+
+    function _calculateBurnAmount(uint256 amount) internal view returns (uint256) {
+        uint256 burnAmount = 0;
+
+        // burn amount calculations
+        if (totalSupply() > _minimumSupply) {
+            burnAmount = amount.div(100);
+            uint256 availableBurn = totalSupply().sub(_minimumSupply);
+            if (burnAmount > availableBurn) {
+                burnAmount = availableBurn;
+            }
+        }
+
+        return burnAmount;
+    }
 
    // constructor () public {
     function initialize() public initializer {
@@ -130,6 +172,48 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
         return rAmount.div(currentRate);
     }
 
+    function excludeFromReward(address account) public onlyOwner() {
+        // require(account != 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D, 'We can not exclude Uniswap router.');
+        require(!_isExcluded[account], "Account is already excluded");
+        if(_rOwned[account] > 0) {
+            _tOwned[account] = tokenFromReflection(_rOwned[account]);
+        }
+        _isExcluded[account] = true;
+        _excluded.push(account);
+    }
+
+    function includeInReward(address account) external onlyOwner() {
+        require(_isExcluded[account], "Account is already excluded");
+        for (uint256 i = 0; i < _excluded.length; i++) {
+            if (_excluded[i] == account) {
+                _excluded[i] = _excluded[_excluded.length - 1];
+                _tOwned[account] = 0;
+                _isExcluded[account] = false;
+                _excluded.pop();
+                break;
+            }
+        }
+    }
+        function _transferBothExcluded(address sender, address recipient, uint256 tAmount) private {
+        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 tLiquidity) = _getValues(tAmount);
+        _tOwned[sender] = _tOwned[sender].sub(tAmount);
+        _rOwned[sender] = _rOwned[sender].sub(rAmount);
+        _tOwned[recipient] = _tOwned[recipient].add(tTransferAmount);
+        _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);        
+        _takeLiquidity(tLiquidity);
+        _reflectFee(rFee, tFee);
+        emit Transfer(sender, recipient, tTransferAmount);
+    }
+    
+        function excludeFromFee(address account) public onlyOwner {
+        _isExcludedFromFee[account] = true;
+    }
+    
+    function includeInFee(address account) public onlyOwner {
+        _isExcludedFromFee[account] = false;
+    }
+
+
 
     function _approve(address owner, address spender, uint256 amount) private {
         require(owner != address(0), "ERC20: approve from the zero address");
@@ -187,9 +271,14 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
         _tOwned[sender] = _tOwned[sender].sub(tAmount);
         _rOwned[sender] = _rOwned[sender].sub(rAmount);
         _tOwned[recipient] = _tOwned[recipient].add(tTransferAmount);
-        _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);        
+        _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);
+        _burnPrecentageOfSupply();
         _reflectFee(rFee, tFee);
         emit Transfer(sender, recipient, tTransferAmount);
+    }
+
+    function _burnPrecentageOfSupply() private {
+        uint256 rateOfBurn = 
     }
 
     function _reflectFee(uint256 rFee, uint256 tFee) private {
@@ -220,6 +309,10 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
     function _getRate() private view returns(uint256) {
         (uint256 rSupply, uint256 tSupply) = _getCurrentSupply();
         return rSupply.div(tSupply);
+    }
+
+    function _getBurnRate() private view returns(uint256){
+        
     }
 
     function _getCurrentSupply() private view returns(uint256, uint256) {
