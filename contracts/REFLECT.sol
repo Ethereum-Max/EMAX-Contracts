@@ -12,11 +12,11 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
     using SafeMath for uint256;
     using Address for address;
 
-    mapping(address => uint256) private _rOwned;
-    mapping(address => uint256) private _tOwned;
-    mapping(address => mapping(address => uint256)) private _allowances;
+    mapping (address => uint256) private _rOwned;
+    mapping (address => uint256) private _tOwned;
+    mapping (address => mapping (address => uint256)) private _allowances;
 
-    mapping(address => bool) private _isExcluded;
+    mapping (address => bool) private _isExcluded;
     address[] private _excluded;
 
     uint256 private constant MAX = ~uint256(0);
@@ -25,12 +25,8 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
     uint256 private _tTotal;
     uint256 private _rTotal;
     uint256 private _tFeeTotal;
-
     uint256 public _reflectRate;
-    uint256 private _previousreflectRate;
-
     uint256 public _burnRate;
-    uint256 private _previousburnRate;
 
     string private _name;
     string private _symbol;
@@ -44,11 +40,9 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
         _name = "EthereumMax";
         _symbol = "eMax";
         _decimals = 18;
-        _tTotal = 2000000000 * 10**6 * 10**18;
+        _tTotal = 2000000000 * (10**6) * (10**18);
         _reflectRate = 3;
         _burnRate = 3;
-        _previousreflectRate = _reflectRate;
-        _previousburnRate = _burnRate;
 
         _rOwned[_msgSender()] = _rTotal;
         emit Transfer(address(0), _msgSender(), _tTotal);
@@ -232,15 +226,7 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
             _transferStandard(sender, recipient, tokensToTransfer);
         }
 
-        _burnPrecentageOfTransaction(tokensToBurn);
-    }
-
-    function setBurnRatePercent(uint256 burnRate) external onlyOwner() {
-        _burnRate = burnRate;
-    }
-
-    function setReflectRatePercent(uint256 reflectRate) external onlyOwner() {
-        _reflectRate = reflectRate;
+        _burnPercentageOfTransaction(sender, tokensToBurn);
     }
 
     function _transferStandard(
@@ -319,18 +305,13 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
         emit Transfer(sender, recipient, tTransferAmount);
     }
 
-    function _burnPrecentageOfTransaction(uint256 burnAmount) private {
-        if (burnAmount > 0) {
-            _burn(msg.sender, burnAmount);
+    function _burnPercentageOfTransaction(address sender, uint256 amount) private {
+        require(amount <= _rOwned[sender], "Amount burned must be less than balance of the sender's wallet");
+        if(amount > 0){
+            _rOwned[sender] = _rOwned[sender].sub(amount);
+            _tTotal = _tTotal.sub(amount);
+            emit Transfer(sender, address(0), amount);
         }
-    }
-
-    function _burn(address account, uint256 amount) private {
-        require(amount != 0);
-        require(amount <= _tOwned[account]);
-        _tTotal = _tTotal.sub(amount);
-        _tOwned[account] = _tOwned[account].sub(amount);
-        emit Transfer(account, address(0), amount);
     }
 
     function _reflectFee(uint256 rFee, uint256 tFee) private {
@@ -398,9 +379,9 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
         uint256 burnAmount = 0;
 
         // burn amount calculations
-        if (totalSupply() > _minimumSupply) {
+        if (_tTotal > _minimumSupply) {
             burnAmount = _calculateBurnFee(amount);
-            uint256 availableBurn = totalSupply().sub(_minimumSupply);
+            uint256 availableBurn = _tTotal.sub(_minimumSupply);
             if (burnAmount > availableBurn) {
                 burnAmount = availableBurn;
             }
@@ -409,16 +390,16 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
         return burnAmount;
     }
 
-    function _calculateReflectFee(uint256 _amount)
+    function _calculateReflectFee(uint256 amount)
         private
         view
         returns (uint256)
     {
-        return _amount.mul(_reflectRate).div(10**2);
+        return amount.mul(_reflectRate).div(10**2);
     }
 
-    function _calculateBurnFee(uint256 _amount) private view returns (uint256) {
-        return _amount.mul(_burnRate).div(10**2);
+    function _calculateBurnFee(uint256 amount) private view returns (uint256) {
+        return amount.mul(_burnRate).div(10**2);
     }
 
     function _getCurrentSupply() private view returns (uint256, uint256) {
@@ -437,6 +418,7 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
     }
 
     //------------------- Owner
+
 
     function excludeAccount(address account) external onlyOwner() {
         require(!_isExcluded[account], "Account is already excluded");
