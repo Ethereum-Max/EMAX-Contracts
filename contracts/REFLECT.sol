@@ -22,7 +22,7 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
     uint256 private constant MAX = ~uint256(0);
     uint256 private constant _minimumSupply = 1000000000 * 10**6 * 10**18;
 
-    uint256 private _tTotal
+    uint256 private _tTotal;
     uint256 private _rTotal;
     uint256 private _tFeeTotal;
 
