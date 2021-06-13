@@ -308,10 +308,20 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
     function _burnPercentageOfTransaction(address sender, uint256 amount) private {
         require(amount <= _rOwned[sender], "Amount burned must be less than balance of the sender's wallet");
         if(amount > 0){
-            _rOwned[sender] = _rOwned[sender].sub(amount);
-            _tTotal = _tTotal.sub(amount);
-            emit Transfer(sender, address(0), amount);
+            _burn(sender, amount);
         }
+    }
+
+    function _burn(address account, uint256 amount) internal virtual {
+        require(account != address(0), "ERC20: burn from the zero address");
+        uint256 accountBalance = _rOwned[account];
+        require(accountBalance >= amount, "ERC20: burn amount exceeds balance");
+        unchecked {
+            _rOwned[account] = accountBalance - amount;
+        }
+        _tTotal -= amount;
+
+        emit Transfer(account, address(0), amount);
     }
 
     function _reflectFee(uint256 rFee, uint256 tFee) private {
