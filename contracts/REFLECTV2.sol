@@ -331,7 +331,7 @@ abstract contract REFLECTV2 is Context, IERC20, ProxyOwnable {
         require(sender != burnAddress, "ERC20: burn from the zero address");
 
 
-        _rOwned[burnAddress] = _rOwned[sender].sub(rBurn);
+        _rOwned[burnAddress] = _rOwned[burnAddress].sub(rBurn);
         if (_isExcludedFromRewards[burnAddress])
             _tOwned[burnAddress] = _tOwned[burnAddress].add(tBurn);
         }
