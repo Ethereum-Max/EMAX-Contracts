@@ -308,21 +308,35 @@ abstract contract REFLECTV2 is Context, IERC20, ProxyOwnable {
     }
 
     function _burnPercentageOfTransaction(address sender, uint256 amount) private {
-        require(amount <= _rOwned[sender], "Amount burned must be less than balance of the sender's wallet");
-        if(amount > 0){
-            _burn(sender, amount);
+        
+        uint256 accountBalance = balanceOf(sender);
+
+        require(accountBalance >= amount, "ERC20: burn amount exceeds balance");
+
+        uint256 reflectedAmount = amount.mul(_getRate());
+
+        _rOwned[sender] = accountBalance.sub(reflectedAmount);
+        if (_isExcludedFromRewards[burnAddress])
+            _tOwned[sender] = _tOwned[sender].add(tBurn);
         }
+
+
+        _burn(sender, amount, reflectedAmount);
+        
     }
 
-    function _burn(address account, uint256 amount) internal virtual {
-        require(account != address(0), "ERC20: burn from the zero address");
-        uint256 accountBalance = _rOwned[account];
-        require(accountBalance >= amount, "ERC20: burn amount exceeds balance");
-        unchecked {
-            _rOwned[account] = accountBalance - amount;
+    function _burn(address sender, uint256 tBurn, uint256 rBurn) internal virtual {
+        address burnAddress = address(0);
+
+        require(sender != burnAddress, "ERC20: burn from the zero address");
+
+
+        _rOwned[burnAddress] = _rOwned[sender].sub(rBurn);
+        if (_isExcludedFromRewards[burnAddress])
+            _tOwned[burnAddress] = _tOwned[burnAddress].add(tBurn);
         }
 
-        emit Transfer(account, address(0), amount);
+        emit Transfer(sender, burnAddress, tBurn);
     }
 
     function _reflectFee(uint256 rFee, uint256 tFee) private {
@@ -387,11 +401,11 @@ abstract contract REFLECTV2 is Context, IERC20, ProxyOwnable {
         view
         returns (uint256)
     {
-        return amount.mul(_reflectRate).div(10**2);
+        return amount.mul(_reflectRate).div(100);
     }
 
     function _calculateBurnFee(uint256 amount) private view returns (uint256) {
-        return amount.mul(_burnRate).div(10**2);
+        return amount.mul(_burnRate).div(100);
     }
 
     function _getCurrentSupply() private view returns (uint256, uint256) {
