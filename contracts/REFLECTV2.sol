@@ -28,10 +28,10 @@ abstract contract REFLECTV2 is Context, IERC20, ProxyOwnable {
     string private _symbol;
     uint8 private _decimals;
 
-    uint256 private constant _minimumSupply = 1000000000 * 10**6 * 10**18;
     uint256 public _reflectRate;
+    uint256 public _previousReflectRate;
     uint256 public _burnRate;
-    uint256 public _availableSupply;
+    uint256 public _previousBurnRate;
 
     // constructor () public {
     function initialize() public initializer {
@@ -43,7 +43,8 @@ abstract contract REFLECTV2 is Context, IERC20, ProxyOwnable {
         _decimals = 18;
         _reflectRate = 3;
         _burnRate = 3;
-        _availableSupply = _tTotal;
+        _previousBurnRate = _burnRate;
+        _previousReflectRate = _reflectRate;
 
         _rOwned[_msgSender()] = _rTotal;
         emit Transfer(address(0), _msgSender(), _tTotal);
@@ -212,9 +213,7 @@ abstract contract REFLECTV2 is Context, IERC20, ProxyOwnable {
         require(recipient != address(0), "ERC20: transfer to the zero address");
         require(amount > 0, "Transfer amount must be greater than zero");
 
-        _availableSupply = _tTotal;
-
-        uint256 tokensToBurn = _calculateBurnAmount(amount);
+        uint256 tokensToBurn = _calculateBurnFee(amount);
         uint256 tokensToTransfer = amount.sub(tokensToBurn);
 
         if (_isExcluded[sender] && !_isExcluded[recipient]) {
@@ -322,7 +321,6 @@ abstract contract REFLECTV2 is Context, IERC20, ProxyOwnable {
         unchecked {
             _rOwned[account] = accountBalance - amount;
         }
-        _availableSupply -= amount;
 
         emit Transfer(account, address(0), amount);
     }
@@ -382,25 +380,6 @@ abstract contract REFLECTV2 is Context, IERC20, ProxyOwnable {
     function _getRate() private view returns (uint256) {
         (uint256 rSupply, uint256 tSupply) = _getCurrentSupply();
         return rSupply.div(tSupply);
-    }
-
-    function _calculateBurnAmount(uint256 amount)
-        private
-        view
-        returns (uint256)
-    {
-        uint256 burnAmount = 0;
-
-        // burn amount calculations
-        if (_availableSupply > _minimumSupply) {
-            burnAmount = _calculateBurnFee(amount);
-            uint256 availableBurn = _availableSupply.sub(_minimumSupply);
-            if (burnAmount > availableBurn) {
-                burnAmount = availableBurn;
-            }
-        }
-
-        return burnAmount;
     }
 
     function _calculateReflectFee(uint256 amount)
