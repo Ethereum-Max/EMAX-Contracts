@@ -315,7 +315,7 @@ abstract contract REFLECTV2 is Context, IERC20, ProxyOwnable {
 
         uint256 reflectedAmount = amount.mul(_getRate());
 
-        _rOwned[sender] = accountBalance.sub(reflectedAmount);
+        _rOwned[sender] = _rOwned[sender].sub(reflectedAmount);
         if (_isExcludedFromRewards[burnAddress])
             _tOwned[sender] = _tOwned[sender].add(tBurn);
         }
