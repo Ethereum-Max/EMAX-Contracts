@@ -34,7 +34,7 @@ contract('EMaxCoin', (accounts) => {
     //define transfer amount and reflacted rate
     const amount = 10000;
     const reflect = amount * 0.02;
-    const reflectedAmont = amount - reflect
+    const reflectedAmount = amount - reflect
 
     //do the transfer
     await EMaxCoinInstance.transfer(accountTwo, amount);
@@ -45,7 +45,7 @@ contract('EMaxCoin', (accounts) => {
 
     //assert coin was sent correctly
     assert.equal(accountOneEndingBalance, accountOneStartinBalance - amount, "Amount was correctly deducted");
-    assert.equal(Number(accountTwoEndingBalance), Number(accountTwoStartinBalance) + Number(reflectedAmont));
+    assert.equal(Number(accountTwoEndingBalance), Number(accountTwoStartinBalance) + Number(reflectedAmount));
 
   });
 });

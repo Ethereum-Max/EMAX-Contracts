@@ -213,6 +213,11 @@ abstract contract REFLECTV2 is Context, IERC20, ProxyOwnable {
         require(recipient != address(0), "ERC20: transfer to the zero address");
         require(amount > 0, "Transfer amount must be greater than zero");
 
+        bool takeFee = (_isExcluded[sender] || _isExcluded[recipient]) ? true : false;
+
+        if(!takeFee) 
+            removeAllFees();
+ 
         uint256 tokensToBurn = _calculateBurnFee(amount);
         uint256 tokensToTransfer = amount.sub(tokensToBurn);
 
@@ -229,6 +234,9 @@ abstract contract REFLECTV2 is Context, IERC20, ProxyOwnable {
         }
 
         _burnPercentageOfTransaction(sender, tokensToBurn);
+
+         if(!takeFee) 
+            restoreAllFees();
     }
 
     function _transferStandard(
@@ -316,8 +324,8 @@ abstract contract REFLECTV2 is Context, IERC20, ProxyOwnable {
         uint256 reflectedAmount = amount.mul(_getRate());
 
         _rOwned[sender] = _rOwned[sender].sub(reflectedAmount);
-        if (_isExcludedFromRewards[burnAddress])
-            _tOwned[sender] = _tOwned[sender].add(tBurn);
+        if (_isExcluded[sender]) {
+            _tOwned[sender] = _tOwned[sender].add(amount);
         }
 
 
@@ -332,11 +340,26 @@ abstract contract REFLECTV2 is Context, IERC20, ProxyOwnable {
 
 
         _rOwned[burnAddress] = _rOwned[burnAddress].sub(rBurn);
-        if (_isExcludedFromRewards[burnAddress])
+        if (_isExcluded[burnAddress]) {
             _tOwned[burnAddress] = _tOwned[burnAddress].add(tBurn);
         }
 
         emit Transfer(sender, burnAddress, tBurn);
+    }
+
+    function removeAllFees() private {
+        if(_burnRate == 0 && _reflectRate == 0) return;
+        
+        _previousBurnRate = _burnRate;
+        _previousReflectRate = _reflectRate;
+        
+        _burnRate = 0;
+        _reflectRate = 0;
+    }
+    
+    function restoreAllFees() private {
+        _burnRate = _previousBurnRate;
+        _reflectRate = _previousReflectRate;
     }
 
     function _reflectFee(uint256 rFee, uint256 tFee) private {
@@ -425,6 +448,13 @@ abstract contract REFLECTV2 is Context, IERC20, ProxyOwnable {
 
     //------------------- Owner
 
+    function setReflectRate(uint256 reflectRate ) external onlyOwner() {
+        _reflectRate = reflectRate;
+    }
+
+    function setBurnRate(uint256 burnRate ) external onlyOwner() {
+        _burnRate = burnRate;
+    }
 
     function excludeAccount(address account) external onlyOwner() {
         require(!_isExcluded[account], "Account is already excluded");
