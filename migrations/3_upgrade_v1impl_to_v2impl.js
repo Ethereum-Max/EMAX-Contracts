@@ -9,12 +9,12 @@ module.exports = async function (deployer) {
 
     // https://docs.openzeppelin.com/upgrades-plugins/1.x/api-truffle-upgrades
     const EMaxV2Address = await prepareUpgrade(EMaxCoin, EMaxCoinV2, { deployer }); // determine if necessary?
-    
+
     const upgraded = upgradeProxy(admin.address, EMaxCoinV2, {deployer});
 };
 
 
-
+// git pull --all; npm install; truffle compile; npx truffle migrate --compile-all --network ropsten --reset
 // 1. reset truffle migrations to remove previous deployment data
 // 2. do first deployment by deploying V1 also with proxy
 // 3. Do a truffle veriofy on V1 using truffle verify EMax Coin
