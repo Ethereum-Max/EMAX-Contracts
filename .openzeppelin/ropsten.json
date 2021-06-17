@@ -19,6 +19,16 @@
       "address": "0xAF076495B27aDB4AE801eb2a1CD1E6Aacf51a1a1",
       "txHash": "0x57e0b4c0498e639522fbdec1ae15b078ad8b3823f537bb13162c9e75c2a89bb1",
       "kind": "transparent"
+    },
+    {
+      "address": "0xC828FC4301D7C14cD768912a0AAd9d691d6E0299",
+      "txHash": "0x249565b97e7b49716f2a7e917be545eacf3f8758085d981d6372a356f0c593ba",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x6dFAD17f1da70FF9f579d30bC0881963B0C545Ba",
+      "txHash": "0x03ed76aa985b067954986cad57535d4de6a9b92ba67d9009d5efb97771a52818",
+      "kind": "transparent"
     }
   ],
   "impls": {
@@ -334,6 +344,145 @@
             "label": "_decimals",
             "type": "t_uint8",
             "src": "REFLECT.sol:31"
+          }
+        ],
+        "types": {
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_mapping(t_address,t_mapping(t_address,t_uint256))": {
+            "label": "mapping(address => mapping(address => uint256))"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)"
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_array(t_address)dyn_storage": {
+            "label": "address[]"
+          },
+          "t_string_storage": {
+            "label": "string"
+          },
+          "t_uint8": {
+            "label": "uint8"
+          }
+        }
+      }
+    },
+    "41081d200f31d7d67f4055dce4b98223d093e17e87f8210a003d7f7d0ff90333": {
+      "address": "0x9139EF4f2b8885F1c800892514BDC7D8df445572",
+      "txHash": "0xe0edca05c1afc60a9151887f6a3226bd27843e63edfac20a168fc9b6dacd1311",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "../@openzeppelin/contracts/proxy/utils/Initializable.sol:23"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "../@openzeppelin/contracts/proxy/utils/Initializable.sol:28"
+          },
+          {
+            "contract": "ProxyOwnable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "ProxyOwnable.sol:20"
+          },
+          {
+            "contract": "REFLECTV2",
+            "label": "_rOwned",
+            "type": "t_mapping(t_address,t_uint256)",
+            "src": "REFLECTV2.sol:15"
+          },
+          {
+            "contract": "REFLECTV2",
+            "label": "_tOwned",
+            "type": "t_mapping(t_address,t_uint256)",
+            "src": "REFLECTV2.sol:16"
+          },
+          {
+            "contract": "REFLECTV2",
+            "label": "_allowances",
+            "type": "t_mapping(t_address,t_mapping(t_address,t_uint256))",
+            "src": "REFLECTV2.sol:17"
+          },
+          {
+            "contract": "REFLECTV2",
+            "label": "_isExcluded",
+            "type": "t_mapping(t_address,t_bool)",
+            "src": "REFLECTV2.sol:19"
+          },
+          {
+            "contract": "REFLECTV2",
+            "label": "_excluded",
+            "type": "t_array(t_address)dyn_storage",
+            "src": "REFLECTV2.sol:20"
+          },
+          {
+            "contract": "REFLECTV2",
+            "label": "_rTotal",
+            "type": "t_uint256",
+            "src": "REFLECTV2.sol:24"
+          },
+          {
+            "contract": "REFLECTV2",
+            "label": "_tFeeTotal",
+            "type": "t_uint256",
+            "src": "REFLECTV2.sol:25"
+          },
+          {
+            "contract": "REFLECTV2",
+            "label": "_name",
+            "type": "t_string_storage",
+            "src": "REFLECTV2.sol:27"
+          },
+          {
+            "contract": "REFLECTV2",
+            "label": "_symbol",
+            "type": "t_string_storage",
+            "src": "REFLECTV2.sol:28"
+          },
+          {
+            "contract": "REFLECTV2",
+            "label": "_decimals",
+            "type": "t_uint8",
+            "src": "REFLECTV2.sol:29"
+          },
+          {
+            "contract": "REFLECTV2",
+            "label": "_reflectRate",
+            "type": "t_uint256",
+            "src": "REFLECTV2.sol:31"
+          },
+          {
+            "contract": "REFLECTV2",
+            "label": "_previousReflectRate",
+            "type": "t_uint256",
+            "src": "REFLECTV2.sol:32"
+          },
+          {
+            "contract": "REFLECTV2",
+            "label": "_burnRate",
+            "type": "t_uint256",
+            "src": "REFLECTV2.sol:33"
+          },
+          {
+            "contract": "REFLECTV2",
+            "label": "_previousBurnRate",
+            "type": "t_uint256",
+            "src": "REFLECTV2.sol:34"
           }
         ],
         "types": {
