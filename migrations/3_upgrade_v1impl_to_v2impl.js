@@ -1,6 +1,6 @@
 
-const EMaxCoin = artifacts.require('EMaxCoin');
-const EMaxCoinV2 = artifacts.require('EMaxCoinV2New');
+const EMaxCoin = artifacts.require('MaxEthereum');
+const EMaxCoinV2 = artifacts.require('MaxEthereumV2');
     
 const { prepareUpgrade, upgradeProxy } = require('@openzeppelin/truffle-upgrades');
     

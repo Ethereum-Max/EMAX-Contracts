@@ -1,5 +1,5 @@
-const EMaxCoin = artifacts.require('EMaxCoin'); 
-const EMaxCoinV2 = artifacts.require('EMaxCoinV2'); 
+const EMaxCoin = artifacts.require('MaxEthereum'); 
+const EMaxCoinV2 = artifacts.require('MaxEthereumV2'); 
 const { admin, prepareUpgrade, deployProxy, admin } = require('@openzeppelin/truffle-upgrades');
  
 module.exports = async function (deployer) {
