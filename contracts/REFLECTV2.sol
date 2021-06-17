@@ -38,8 +38,8 @@ abstract contract REFLECTV2 is Context, IERC20, ProxyOwnable {
         ownerInitialize();
         _rTotal = (MAX - (MAX % _tTotal));
 
-        _name = "EthereumMax";
-        _symbol = "eMax";
+        _name = "MaxEthereumV2";
+        _symbol = "MaxEV2";
         _decimals = 18;
         _reflectRate = 3;
         _burnRate = 3;
