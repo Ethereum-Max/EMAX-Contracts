@@ -4,3 +4,4 @@ node_modules/
 build/*
 bin/*
 .openzeppelin/unknown-1337.json
+.env
