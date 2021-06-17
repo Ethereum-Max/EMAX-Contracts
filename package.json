@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "dotenv": "^8.2.0",
-    "ganache-cli": "^6.12.2"
+    "ganache-cli": "^6.12.2",
+    "truffle-plugin-verify": "^0.5.9"
   }
 }

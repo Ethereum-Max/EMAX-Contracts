@@ -14,6 +14,11 @@
       "address": "0x03eAb3f4D3fDC4a4BE572a53DA4314fe2A5A6017",
       "txHash": "0x5accb43127898482673662947e49228c5630cb71ea4a13b3580a36bfede01852",
       "kind": "transparent"
+    },
+    {
+      "address": "0xAF076495B27aDB4AE801eb2a1CD1E6Aacf51a1a1",
+      "txHash": "0x57e0b4c0498e639522fbdec1ae15b078ad8b3823f537bb13162c9e75c2a89bb1",
+      "kind": "transparent"
     }
   ],
   "impls": {
@@ -214,6 +219,121 @@
             "label": "_decimals",
             "type": "t_uint8",
             "src": "REFLECT.sol:33"
+          }
+        ],
+        "types": {
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_mapping(t_address,t_mapping(t_address,t_uint256))": {
+            "label": "mapping(address => mapping(address => uint256))"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)"
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_array(t_address)dyn_storage": {
+            "label": "address[]"
+          },
+          "t_string_storage": {
+            "label": "string"
+          },
+          "t_uint8": {
+            "label": "uint8"
+          }
+        }
+      }
+    },
+    "eea5122949787768e4dc58f8b0c09bcc2d9cf6d8b811be5167e5ab905fb49f89": {
+      "address": "0x87E0b66c3B6C3c43CC8763D849015274FaA4b9Ae",
+      "txHash": "0xbc2cd07859242d2bbadd94f9fad176a9534dcbd95970fa1ba0b54d6249bcd283",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "../@openzeppelin/contracts/proxy/utils/Initializable.sol:23"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "../@openzeppelin/contracts/proxy/utils/Initializable.sol:28"
+          },
+          {
+            "contract": "ProxyOwnable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "ProxyOwnable.sol:20"
+          },
+          {
+            "contract": "REFLECT",
+            "label": "_rOwned",
+            "type": "t_mapping(t_address,t_uint256)",
+            "src": "REFLECT.sol:17"
+          },
+          {
+            "contract": "REFLECT",
+            "label": "_tOwned",
+            "type": "t_mapping(t_address,t_uint256)",
+            "src": "REFLECT.sol:18"
+          },
+          {
+            "contract": "REFLECT",
+            "label": "_allowances",
+            "type": "t_mapping(t_address,t_mapping(t_address,t_uint256))",
+            "src": "REFLECT.sol:19"
+          },
+          {
+            "contract": "REFLECT",
+            "label": "_isExcluded",
+            "type": "t_mapping(t_address,t_bool)",
+            "src": "REFLECT.sol:21"
+          },
+          {
+            "contract": "REFLECT",
+            "label": "_excluded",
+            "type": "t_array(t_address)dyn_storage",
+            "src": "REFLECT.sol:22"
+          },
+          {
+            "contract": "REFLECT",
+            "label": "_rTotal",
+            "type": "t_uint256",
+            "src": "REFLECT.sol:26"
+          },
+          {
+            "contract": "REFLECT",
+            "label": "_tFeeTotal",
+            "type": "t_uint256",
+            "src": "REFLECT.sol:27"
+          },
+          {
+            "contract": "REFLECT",
+            "label": "_name",
+            "type": "t_string_storage",
+            "src": "REFLECT.sol:29"
+          },
+          {
+            "contract": "REFLECT",
+            "label": "_symbol",
+            "type": "t_string_storage",
+            "src": "REFLECT.sol:30"
+          },
+          {
+            "contract": "REFLECT",
+            "label": "_decimals",
+            "type": "t_uint8",
+            "src": "REFLECT.sol:31"
           }
         ],
         "types": {
