@@ -5,7 +5,7 @@ const { prepareUpgrade, upgradeProxy } = require('@openzeppelin/truffle-upgrades
  
 module.exports = async function (deployer) {
     const EMaxV2Address = await prepareUpgrade(EMaxCoin, EMaxCoinV2, { deployer });
-    const upgraded = upgradeProxy(upgradeProxyadd, EmaxV2, {deployer});
+    const upgraded = upgradeProxy(upgradeProxy, EmaxV2, {deployer});
     // let EMaxV2 = await EMaxCoinV2.at(EMaxV2Address);
     // await EMaxV2.setBurnRate.call(3);
     // await EMaxV2.setReflectRate.call(3);
