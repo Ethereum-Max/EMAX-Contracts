@@ -6,8 +6,11 @@ const { prepareUpgrade, upgradeProxy } = require('@openzeppelin/truffle-upgrades
     
 module.exports = async function (deployer) {
     const admin = admin.getInstance();
-    const EMaxV2Address = await prepareUpgrade(EMaxCoin, EMaxCoinV2, { deployer });
-    const upgraded = upgradeProxy(admin.address, EmaxV2, {deployer});
+
+    // https://docs.openzeppelin.com/upgrades-plugins/1.x/api-truffle-upgrades
+    const EMaxV2Address = await prepareUpgrade(EMaxCoin, EMaxCoinV2, { deployer }); // determine if necessary?
+    
+    const upgraded = upgradeProxy(admin.address, EMaxCoinV2, {deployer});
 };
 
 
