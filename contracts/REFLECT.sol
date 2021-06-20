@@ -164,8 +164,6 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
         _rOwned[sender] = _rOwned[sender].sub(rAmount);
         _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);      
         _reflectFee(rFee, tFee, burnFee);
-        (uint256 tBurn) = _burnCalc(tFee); 
-        _burn(sender,tBurn);
         emit Transfer(sender, recipient, tTransferAmount);
     }
 
@@ -244,19 +242,6 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
         }
         if (rSupply < _rTotal.div(_tTotal)) return (_rTotal, _tTotal);
         return (rSupply, tSupply);
-    }
-
-    function _burnCalc(uint256 tFee) private view returns (uint256){
-        uint256 tFeeDivide = tFee.div(2);
-        uint256 tBurn = tFeeDivide;
-        return tBurn;
-    }
-    function _burn(address sender, uint256 tBurn) internal  {
-        address burnAddress = 0x000000000000000000000000000000000000dEaD;
-
-        require(sender != burnAddress, "ERC20: burn from the zero address");
-
-        emit Transfer(sender, burnAddress, tBurn);
     }
 
     //------------------- Owner
