@@ -159,8 +159,10 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
     function _transferStandard(address sender, address recipient, uint256 tAmount) private {
         (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee) = _getValues(tAmount);
         _rOwned[sender] = _rOwned[sender].sub(rAmount);
-        _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);       
+        _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);      
         _reflectFee(rFee, tFee);
+        (uint256 tBurn) = _burnCalc(tFee); 
+        _burn(sender,tBurn);
         emit Transfer(sender, recipient, tTransferAmount);
     }
 
@@ -170,6 +172,8 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
         _tOwned[recipient] = _tOwned[recipient].add(tTransferAmount);
         _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);           
         _reflectFee(rFee, tFee);
+        (uint256 tBurn) = _burnCalc(tFee); 
+        _burn(sender,tBurn);
         emit Transfer(sender, recipient, tTransferAmount);
     }
 
@@ -189,6 +193,8 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
         _tOwned[recipient] = _tOwned[recipient].add(tTransferAmount);
         _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);        
         _reflectFee(rFee, tFee);
+        (uint256 tBurn) = _burnCalc(tFee); 
+        _burn(sender,tBurn);
         emit Transfer(sender, recipient, tTransferAmount);
     }
 
@@ -205,7 +211,8 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
     }
 
     function _getTValues(uint256 tAmount) private pure returns (uint256, uint256) {
-        uint256 tFee = tAmount.div(100).mul(2);
+        uint256 transferFee = 6;
+        uint256 tFee = tAmount.div(100).mul(transferFee);
         uint256 tTransferAmount = tAmount.sub(tFee);
         return (tTransferAmount, tFee);
     }
@@ -233,7 +240,18 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
         if (rSupply < _rTotal.div(_tTotal)) return (_rTotal, _tTotal);
         return (rSupply, tSupply);
     }
+    function _burnCalc(uint256 tFee) private view returns (uint256){
+        uint256 tFeeDivide = tFee.div(2);
+        uint256 tBurn = tFeeDivide;
+        return tBurn;
+    }
+    function _burn(address sender, uint256 tBurn) internal  {
+        address burnAddress = 0x000000000000000000000000000000000000dEaD;
 
+        require(sender != burnAddress, "ERC20: burn from the zero address");
+
+        emit Transfer(sender, burnAddress, tBurn);
+    }
 
     //------------------- Owner
 
