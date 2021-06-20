@@ -160,7 +160,7 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
     }
 
     function _transferStandard(address sender, address recipient, uint256 tAmount) private {
-        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 burnFee) = _getValues(tAmount);
+        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 burnFee) = _getValues(tAmount, false);
         _rOwned[sender] = _rOwned[sender].sub(rAmount);
         _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);      
         _reflectFee(rFee, tFee, burnFee);
@@ -168,7 +168,7 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
     }
 
     function _transferToExcluded(address sender, address recipient, uint256 tAmount) private {
-        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 burnFee) = _getValues(tAmount);
+        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 burnFee) = _getValues(tAmount, true);
         _rOwned[sender] = _rOwned[sender].sub(rAmount);
         _tOwned[recipient] = _tOwned[recipient].add(tTransferAmount);
         _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);           
@@ -177,7 +177,7 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
     }
 
     function _transferFromExcluded(address sender, address recipient, uint256 tAmount) private {
-        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 burnFee) = _getValues(tAmount);
+        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 burnFee) = _getValues(tAmount, true);
         _tOwned[sender] = _tOwned[sender].sub(tAmount);
         _rOwned[sender] = _rOwned[sender].sub(rAmount);
         _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);   
@@ -186,7 +186,7 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
     }
 
     function _transferBothExcluded(address sender, address recipient, uint256 tAmount) private {
-        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 burnFee) = _getValues(tAmount);
+        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 burnFee) = _getValues(tAmount, true);
         _tOwned[sender] = _tOwned[sender].sub(tAmount);
         _rOwned[sender] = _rOwned[sender].sub(rAmount);
         _tOwned[recipient] = _tOwned[recipient].add(tTransferAmount);
@@ -204,18 +204,24 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
 
     }
 
-    function _getValues(uint256 tAmount) private view returns (uint256, uint256, uint256, uint256, uint256, uint256) {
-        (uint256 tTransferAmount, uint256 tFee, uint256 burnFee) = _getTValues(tAmount);
+    function _getValues(uint256 tAmount, bool eitherExcluded) private view returns (uint256, uint256, uint256, uint256, uint256, uint256) {
+        (uint256 tTransferAmount, uint256 tFee, uint256 burnFee) = _getTValues(tAmount, eitherExcluded);
         uint256 currentRate =  _getRate();
         (uint256 rAmount, uint256 rTransferAmount, uint256 rFee) = _getRValues(tAmount, tFee, currentRate);
         return (rAmount, rTransferAmount, rFee, tTransferAmount, tFee, burnFee);
     }
 
-    function _getTValues(uint256 tAmount) private pure returns (uint256, uint256, uint256) {
+    function _getTValues(uint256 tAmount, bool eitherExcluded) private pure returns (uint256, uint256, uint256) {
         uint256 transferFeePercent = 3;
         uint256 burnFeePercent = 3;
         uint256 tFee = tAmount.div(100).mul(transferFeePercent);
-        uint256 burnFee = tAmount.div(100).mul(burnFeePercent);
+        uint256 burnFee;
+        if (!eitherExcluded) {
+            burnFee = tAmount.div(100).mul(burnFeePercent);
+        } else {
+            burnFee = 0;
+        }
+        
         uint256 tTransferAmount = tAmount.sub(tFee).sub(burnFee);
         return (tTransferAmount, tFee, burnFee);
     }
