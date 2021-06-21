@@ -15,7 +15,7 @@
 * Execute the command below to pull in all the most recent changes
     * `git pull --all`
 * Execute the command below to install all dependencies fo project
-    * `npm install`
+    * `npm ci`
 * Execute the command below to compile smart contracts
     * `npx truffle compile`
 * Execute the command below to deploy to testnet
