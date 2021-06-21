@@ -107,26 +107,6 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
         return _tFeeTotal;
     }
 
-    function reflect(uint256 tAmount) public {
-        address sender = _msgSender();
-        require(!_isExcluded[sender], "Excluded addresses cannot call this function");
-        (uint256 rAmount,,,,,) = _getValues(tAmount);
-        _rOwned[sender] = _rOwned[sender].sub(rAmount);
-        _rTotal = _rTotal.sub(rAmount);
-        _tFeeTotal = _tFeeTotal.add(tAmount);
-    }
-
-    function reflectionFromToken(uint256 tAmount, bool deductTransferFee) public view returns(uint256) {
-        require(tAmount <= _tTotal, "Amount must be less than supply");
-        if (!deductTransferFee) {
-            (uint256 rAmount,,,,,) = _getValues(tAmount);
-            return rAmount;
-        } else {
-            (,uint256 rTransferAmount,,,,) = _getValues(tAmount);
-            return rTransferAmount;
-        }
-    }
-
     function tokenFromReflection(uint256 rAmount) public view returns(uint256) {
         require(rAmount <= _rTotal, "Amount must be less than total reflections");
         uint256 currentRate =  _getRate();
@@ -240,13 +220,18 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
 
     function _getCurrentSupply() private view returns(uint256, uint256) {
         uint256 rSupply = _rTotal;
-        uint256 tSupply = _tTotal;      
+        uint256 tSupply = _tTotal;    
+
+        tSupply = tSupply.sub(_burntTotal);
+        
         for (uint256 i = 0; i < _excluded.length; i++) {
             if (_rOwned[_excluded[i]] > rSupply || _tOwned[_excluded[i]] > tSupply) return (_rTotal, _tTotal);
             rSupply = rSupply.sub(_rOwned[_excluded[i]]);
             tSupply = tSupply.sub(_tOwned[_excluded[i]]);
+            
         }
         if (rSupply < _rTotal.div(_tTotal)) return (_rTotal, _tTotal);
+
         return (rSupply, tSupply);
     }
 
