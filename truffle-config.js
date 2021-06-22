@@ -9,7 +9,7 @@ module.exports = {
   //
   compilers: {
       solc: {
-        version: "^0.8.0"
+        version: "0.8.4"
       }
   },
   networks: {
@@ -23,7 +23,8 @@ module.exports = {
         return new HDWalletProvider(ROPSTEN_MNEMONIC, "https://ropsten.infura.io/v3/" + API_KEY)
       },
       network_id: 3,
-      gas: 4000000      //make sure this gas allocation isn't over 4M, which is the max
+      gas: 4000000,      //make sure this gas allocation isn't over 4M, which is the max
+      gasPrice: 45000000000 // 45 gwei 
     },
     mainnet: {
       provider: function() {
