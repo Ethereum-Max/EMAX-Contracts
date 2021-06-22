@@ -23,8 +23,9 @@ module.exports = {
         return new HDWalletProvider(ROPSTEN_MNEMONIC, "https://ropsten.infura.io/v3/" + API_KEY)
       },
       network_id: 3,
+      skipDryRun: true,
       gas: 4000000,      //make sure this gas allocation isn't over 4M, which is the max
-      gasPrice: 45000000000 // 45 gwei 
+      gasPrice: 70000000000 // 70 gwei 
     },
     mainnet: {
       provider: function() {
