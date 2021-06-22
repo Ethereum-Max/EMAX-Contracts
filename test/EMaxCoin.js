@@ -33,7 +33,7 @@ contract('EMaxCoin', (accounts) => {
 
     //define transfer amount and reflacted rate
     const amount = 10000;
-    const reflect = amount * 0.03;
+    const reflect = amount * 0.06;
     const reflectedAmont = amount - reflect
 
     //do the transfer
