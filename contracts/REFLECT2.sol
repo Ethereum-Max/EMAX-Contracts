@@ -10,7 +10,7 @@ import "./ProxyOwnable.sol";
 
 
 
-abstract contract REFLECT is Context, IERC20, ProxyOwnable {
+abstract contract REFLECT2 is Context, IERC20, ProxyOwnable {
     using SafeMath for uint256;
     using Address for address;
 
@@ -205,7 +205,7 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
     }
 
     function _getTValues(uint256 tAmount) private pure returns (uint256, uint256) {
-        uint256 tFee = tAmount.div(100).mul(2);
+        uint256 tFee = tAmount.div(100).mul(6);
         uint256 tTransferAmount = tAmount.sub(tFee);
         return (tTransferAmount, tFee);
     }
