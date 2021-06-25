@@ -1,4 +1,5 @@
 var HDWalletProvider = require("truffle-hdwallet-provider");
+const secrets = require('./secrets.json')
 
 module.exports = {
   // Uncommenting the defaults below 
@@ -9,7 +10,7 @@ module.exports = {
   //
   compilers: {
       solc: {
-        version: "^0.8.0"
+        version: "0.8.4"
       }
   },
   networks: {
@@ -20,17 +21,20 @@ module.exports = {
     },
     ropsten: {
       provider: function() {
-        return new HDWalletProvider(ROPSTEN_MNEMONIC, "https://ropsten.infura.io/v3/" + API_KEY)
+        return new HDWalletProvider(secrets['ROPSTEN_MNEMONIC'], "https://ropsten.infura.io/v3/" + secrets['API_KEY'])
       },
       network_id: 3,
-      gas: 4000000      //make sure this gas allocation isn't over 4M, which is the max
+      skipDryRun: true,
+      gas: 4000000,      //make sure this gas allocation isn't over 4M, which is the max
+      gasPrice: 70000000000 // 70 gwei 
     },
     mainnet: {
       provider: function() {
-        return new HDWalletProvider(MNEMONIC, "https://mainnet.infura.io/v3/" + API_KEY)
+        return new HDWalletProvider(secrets['MAINNET_MNEMONIC'], "https://mainnet.infura.io/v3/" + secrets['API_KEY'])
       },
       network_id: 1,
       gas: 5000000,
+      skipDryRun: true,
       gasPrice: 45000000000 // 45 gwei
     }
   },

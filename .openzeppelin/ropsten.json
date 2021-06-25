@@ -1,25 +1,20 @@
 {
   "manifestVersion": "3.2",
   "admin": {
-    "address": "0x30e4d7507618948958c70DcDcBe23c53215fe2A0",
-    "txHash": "0x57e8ee5b4532e16b327176ae795879c050f85c2d822cfd1b955cefb75e02c7d0"
+    "address": "0x1428725B0716811e4E8bE60f08Ed1A8347D16c6b",
+    "txHash": "0xf81dea024c47acd44f9415394696e9309f781b0fc1be71ad1a042b6274e1e998"
   },
   "proxies": [
     {
-      "address": "0xb0bd7001CbfE0d34D76BfDE69ba903522C9a9aE2",
-      "txHash": "0x7e019e488f84f0574d50866c308affd5c7709487de5af3111c9ec38de92ca2ee",
-      "kind": "transparent"
-    },
-    {
-      "address": "0x03eAb3f4D3fDC4a4BE572a53DA4314fe2A5A6017",
-      "txHash": "0x5accb43127898482673662947e49228c5630cb71ea4a13b3580a36bfede01852",
+      "address": "0x1df92D6c0Ef1ea101Ca9535E97F9301574FdD702",
+      "txHash": "0x724fbdce1f0eb7e7c111a1a1d2ff9c848833e43ab93d970a21625bbc1bbacc9a",
       "kind": "transparent"
     }
   ],
   "impls": {
     "4469a873a9fafe1170300028d7576e125d80dfbfc7541d3ad06d8d27ba0b2fe3": {
-      "address": "0x8de13D394B2CA345b0f48AC2165C6a2aD10a6970",
-      "txHash": "0xcc0824c4adc1ba7b43014c9c79824c9ce90619fbd30e9ab1d8115b8d0b01a409",
+      "address": "0x340e3d8b9f7C808ef0A0830334b099A7e863eBF6",
+      "txHash": "0x04f2a71cffb305db7c689a062b8427a8e28aa1a7524a0109d84bb9c034d4f128",
       "layout": {
         "storage": [
           {
@@ -44,61 +39,61 @@
             "contract": "REFLECT",
             "label": "_rOwned",
             "type": "t_mapping(t_address,t_uint256)",
-            "src": "REFLECT.sol:19"
+            "src": "REFLECT.sol:17"
           },
           {
             "contract": "REFLECT",
             "label": "_tOwned",
             "type": "t_mapping(t_address,t_uint256)",
-            "src": "REFLECT.sol:20"
+            "src": "REFLECT.sol:18"
           },
           {
             "contract": "REFLECT",
             "label": "_allowances",
             "type": "t_mapping(t_address,t_mapping(t_address,t_uint256))",
-            "src": "REFLECT.sol:21"
+            "src": "REFLECT.sol:19"
           },
           {
             "contract": "REFLECT",
             "label": "_isExcluded",
             "type": "t_mapping(t_address,t_bool)",
-            "src": "REFLECT.sol:23"
+            "src": "REFLECT.sol:21"
           },
           {
             "contract": "REFLECT",
             "label": "_excluded",
             "type": "t_array(t_address)dyn_storage",
-            "src": "REFLECT.sol:24"
+            "src": "REFLECT.sol:22"
           },
           {
             "contract": "REFLECT",
             "label": "_rTotal",
             "type": "t_uint256",
-            "src": "REFLECT.sol:28"
+            "src": "REFLECT.sol:26"
           },
           {
             "contract": "REFLECT",
             "label": "_tFeeTotal",
             "type": "t_uint256",
-            "src": "REFLECT.sol:29"
+            "src": "REFLECT.sol:27"
           },
           {
             "contract": "REFLECT",
             "label": "_name",
             "type": "t_string_storage",
-            "src": "REFLECT.sol:31"
+            "src": "REFLECT.sol:29"
           },
           {
             "contract": "REFLECT",
             "label": "_symbol",
             "type": "t_string_storage",
-            "src": "REFLECT.sol:32"
+            "src": "REFLECT.sol:30"
           },
           {
             "contract": "REFLECT",
             "label": "_decimals",
             "type": "t_uint8",
-            "src": "REFLECT.sol:33"
+            "src": "REFLECT.sol:31"
           }
         ],
         "types": {
@@ -132,9 +127,9 @@
         }
       }
     },
-    "021bfbcd1bfcf92a27132654bcc054721750592a9ebe2d02b898215f6a410869": {
-      "address": "0x53A451259DDde0cbCD0Aa72787d8fEc752229034",
-      "txHash": "0x82e66d3e8b746765f4436dbaa75a2719c4711e836675a83e6a0f7e6ece797ff4",
+    "b56f4e3d0b8d499cdefc1dfcc52a7dfb05923a51a178e6c0e5902d617524ff54": {
+      "address": "0x336fc6c4a9cC77351EDE46350153a0B843a35681",
+      "txHash": "0xfedd09e427b2f47afb793d7eaf63c9cbb4622a3c2e270752791dfa9d07d020ca",
       "layout": {
         "storage": [
           {
@@ -156,64 +151,64 @@
             "src": "ProxyOwnable.sol:20"
           },
           {
-            "contract": "REFLECT",
+            "contract": "REFLECT2",
             "label": "_rOwned",
             "type": "t_mapping(t_address,t_uint256)",
-            "src": "REFLECT.sol:19"
+            "src": "REFLECT2.sol:17"
           },
           {
-            "contract": "REFLECT",
+            "contract": "REFLECT2",
             "label": "_tOwned",
             "type": "t_mapping(t_address,t_uint256)",
-            "src": "REFLECT.sol:20"
+            "src": "REFLECT2.sol:18"
           },
           {
-            "contract": "REFLECT",
+            "contract": "REFLECT2",
             "label": "_allowances",
             "type": "t_mapping(t_address,t_mapping(t_address,t_uint256))",
-            "src": "REFLECT.sol:21"
+            "src": "REFLECT2.sol:19"
           },
           {
-            "contract": "REFLECT",
+            "contract": "REFLECT2",
             "label": "_isExcluded",
             "type": "t_mapping(t_address,t_bool)",
-            "src": "REFLECT.sol:23"
+            "src": "REFLECT2.sol:21"
           },
           {
-            "contract": "REFLECT",
+            "contract": "REFLECT2",
             "label": "_excluded",
             "type": "t_array(t_address)dyn_storage",
-            "src": "REFLECT.sol:24"
+            "src": "REFLECT2.sol:22"
           },
           {
-            "contract": "REFLECT",
+            "contract": "REFLECT2",
             "label": "_rTotal",
             "type": "t_uint256",
-            "src": "REFLECT.sol:28"
+            "src": "REFLECT2.sol:26"
           },
           {
-            "contract": "REFLECT",
+            "contract": "REFLECT2",
             "label": "_tFeeTotal",
             "type": "t_uint256",
-            "src": "REFLECT.sol:29"
+            "src": "REFLECT2.sol:27"
           },
           {
-            "contract": "REFLECT",
+            "contract": "REFLECT2",
             "label": "_name",
             "type": "t_string_storage",
-            "src": "REFLECT.sol:31"
+            "src": "REFLECT2.sol:29"
           },
           {
-            "contract": "REFLECT",
+            "contract": "REFLECT2",
             "label": "_symbol",
             "type": "t_string_storage",
-            "src": "REFLECT.sol:32"
+            "src": "REFLECT2.sol:30"
           },
           {
-            "contract": "REFLECT",
+            "contract": "REFLECT2",
             "label": "_decimals",
             "type": "t_uint8",
-            "src": "REFLECT.sol:33"
+            "src": "REFLECT2.sol:31"
           }
         ],
         "types": {
