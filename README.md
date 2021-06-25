@@ -5,8 +5,6 @@
 * Install Chrome, Firefox, Opera
 * Install MetaMask
 * Install NodeJS
-* Install TruffleJS
-* Install Ganache
 
 
 ## Deploying To Test Net
@@ -14,8 +12,8 @@
 	* `git pull --all; npm install; truffle compile; npx truffle migrate --compile-all --network ropsten --reset`
 * Execute the command below to pull in all the most recent changes
     * `git pull --all`
-* Execute the command below to install all dependencies fo project
-    * `npm install`
+* Execute the command below to install all pinned dependencies for project
+    * `npm ci`
 * Execute the command below to compile smart contracts
     * `truffle compile`
 * Execute the command below to deploy to testnet
