@@ -160,7 +160,7 @@ abstract contract REFLECT3 is Context, IERC20, ProxyOwnable {
 
         uint256 tBurn = amount.mul(burnFee).div(100);
         uint256 rBurn = tBurn.mul(currentRate);
-        _burnTokens(sender, tBurn, rBurn);
+        _burnTokens(address(this), tBurn, rBurn);
     }
 
     function _reflectFee(uint256 rFee, uint256 tFee) private {
