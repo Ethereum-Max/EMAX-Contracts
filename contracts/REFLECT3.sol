@@ -143,7 +143,7 @@ abstract contract REFLECT3 is Context, IERC20, ProxyOwnable {
         require(recipient != address(0), "ERC20: transfer to the zero address");
         require(amount > 0, "Transfer amount must be greater than zero");
 
-        uint256 txFee = 3;
+        uint256 txFee = 6;
         uint256 burnFee = 3;
         uint256 totalFeePercentage = txFee + burnFee;
         (uint256 rAmount, uint256 rTransferAmount, uint256 tTransferAmount, uint256 currentRate) = _getValues(amount, totalFeePercentage);
