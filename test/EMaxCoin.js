@@ -47,12 +47,55 @@ contract('EMaxCoin', (accounts) => {
     })
   })
 
+  // approve(spender, amount)
+
+  describe('approve', () => {
+    it('approves tokens for delegated transfer', async() => {
+      // given
+      const account  = accounts[1];
+      const amount = 100;
+
+      // when
+      const success = await coinInstance.approve.call(account, amount);
+
+      // then
+      assert.isTrue(success);
+    })
+
+    let receipt, ownerAccount, spenderAccount, amount;
+
+    before(async () => {
+      // given
+      ownerAccount = accounts[0]
+      spenderAccount = accounts[1];
+      amount = 100;
+
+      // when
+      receipt = await coinInstance.approve(spenderAccount, amount);
+    })
+
+    // then
+    it('should have a valid receipt', () => {
+      assert.equal(receipt.logs.length, 1, 'triggers one event')
+      assert.equal(receipt.logs[0].event, 'Approval', 'should be Approval event')
+      assert.equal(receipt.logs[0].args.owner, ownerAccount, 'logs the owner account the tokens are transferred from')
+      assert.equal(receipt.logs[0].args.spender, spenderAccount, 'logs the spender account delegated to transfer the tokens')
+      assert.equal(receipt.logs[0].args.value, amount, 'logs the amount transferred')
+    })
+
+    it('should set the allowance to the approved amount', async () => {
+      const allowance = await coinInstance.allowance(ownerAccount, spenderAccount);
+      assert.equal(allowance, amount, 'stores the allowance for delegated transfer')
+    })
+  })
+
   // transfer(recipient, amount)
 
   describe('transfer', () => {
     let accountOne, accountTwo;
     let accountOneStartingBalance, accountTwoStartingBalance;
-    let amount;
+    let amount, reflect, reflectedAmount;
+    let receipt;
 
     before(async () => {
       // given
@@ -61,21 +104,31 @@ contract('EMaxCoin', (accounts) => {
       accountOneStartingBalance = await coinInstance.balanceOf(accountOne);
       accountTwoStartingBalance = await coinInstance.balanceOf(accountTwo);
       amount = 10000;
+      reflect = amount * 0.06;
+      reflectedAmount = amount - reflect;
 
       // when
-      await coinInstance.transfer(accountTwo, amount, { from: accountOne });
+      receipt = await coinInstance.transfer(accountTwo, amount, { from: accountOne });
     })
 
+    // then
     it('should deduct from the first account', async () => {
       const accountOneEndingBalance = await coinInstance.balanceOf(accountOne);
       assert.equal(accountOneEndingBalance, accountOneStartingBalance - amount, "Amount was correctly deducted");
     })
 
     it('should increase the balance of the second account', async () => {
-      const reflect = amount * 0.06;
-      const reflectedAmount = amount - reflect;
       const accountTwoEndingBalance = await coinInstance.balanceOf(accountTwo);
       assert.equal(Number(accountTwoEndingBalance), Number(accountTwoStartingBalance) + Number(reflectedAmount));
+    })
+
+    it('should produce a valid receipt', () => {
+      // console.log(receipt.logs[0]);
+      assert.equal(receipt.logs.length, 1, 'triggers one event');
+      assert.equal(receipt.logs[0].event, 'Transfer', 'should be Transfer event')
+      assert.equal(receipt.logs[0].args.from, accountOne, 'logs the account the tokens are transferred from')
+      assert.equal(receipt.logs[0].args.to, accountTwo, 'logs the account the tokens are transferred to')
+      assert.equal(Number(receipt.logs[0].args.value), amount - reflect, 'logs the amount transferred')
     })
   })
 });
