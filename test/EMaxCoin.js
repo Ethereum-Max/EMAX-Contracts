@@ -80,7 +80,7 @@ contract('EMaxCoin', (accounts) => {
       assert.equal(receipt.logs[0].event, 'Approval', 'should be Approval event')
       assert.equal(receipt.logs[0].args.owner, ownerAccount, 'logs the owner account the tokens are transferred from')
       assert.equal(receipt.logs[0].args.spender, spenderAccount, 'logs the spender account delegated to transfer the tokens')
-      assert.equal(receipt.logs[0].args.value, amount, 'logs the amount transferred')
+      assert.equal(receipt.logs[0].args.value, amount, 'logs the amount approved')
     })
 
     it('should set the allowance to the approved amount', async () => {
@@ -128,7 +128,94 @@ contract('EMaxCoin', (accounts) => {
       assert.equal(receipt.logs[0].event, 'Transfer', 'should be Transfer event')
       assert.equal(receipt.logs[0].args.from, accountOne, 'logs the account the tokens are transferred from')
       assert.equal(receipt.logs[0].args.to, accountTwo, 'logs the account the tokens are transferred to')
-      assert.equal(Number(receipt.logs[0].args.value), amount - reflect, 'logs the amount transferred')
+      assert.equal(Number(receipt.logs[0].args.value), reflectedAmount, 'logs the amount transferred')
+    })
+  })
+
+  // transferFrom(sender, recipient, amount)
+
+  describe('transferFrom', () => {
+    let fromAccount, toAccount, spendingAccount, receipt, amount;
+
+    before(async () => {
+      fromAccount = accounts[2]
+      toAccount = accounts[3]
+      spendingAccount = accounts[4]
+
+      await coinInstance.transfer(fromAccount, 100, { from: accounts[0] })
+      await coinInstance.approve(spendingAccount, 10, { from: fromAccount })
+    })
+
+    describe('when the transfer amount is larger than the balance', () => {
+      before(() => {
+        // given
+        amount = 9999;
+      })
+
+      it('should throw an error', async () => {
+        try {
+          // when
+          receipt = await coinInstance.transferFrom(fromAccount, toAccount, amount)
+          throw new Error("An error should have been thrown");
+        } catch (error) {
+          // then
+          assert(error.message.includes('revert'), true, 'cannot transfer value larger than balance')
+        }
+      })
+    })
+
+    describe('when the transfer amount is within the balance and approved amount (call)', () => {
+      let success;
+
+      before(async () => {
+        // given
+        amount = 10;
+
+        // when
+        success = await coinInstance.transferFrom.call(fromAccount, toAccount, amount, { from: spendingAccount })
+      })
+
+      // then
+      it('should execute successfully', () => {
+        assert.isTrue(success)
+      })
+    })
+
+    describe('when the transfer amount is within the balance and approved amount', () => {
+      let receipt;
+
+      before(async () => {
+        // given
+        amount = 10
+
+        // when
+        receipt = await coinInstance.transferFrom(fromAccount, toAccount, amount, { from: spendingAccount })
+      })
+
+      // then
+      it('should produce a valid receipt', () => {
+        assert.equal(receipt.logs.length, 2, 'triggers two events')
+        assert.equal(receipt.logs[0].event, 'Transfer', 'should be Transfer event')
+        assert.equal(receipt.logs[0].args.from, fromAccount, 'logs the account the tokens are transferred from')
+        assert.equal(receipt.logs[0].args.to, toAccount, 'logs the account the tokens are transferred to')
+        assert.equal(Number(receipt.logs[0].args.value), amount, 'logs the amount transferred')
+        assert.equal(receipt.logs[1].event, 'Approval', 'should be Approval event')
+        assert.equal(receipt.logs[1].args.owner, fromAccount, 'logs the owner account the tokens are transferred from')
+        assert.equal(receipt.logs[1].args.spender, spendingAccount, 'logs the spender account delegated to transfer the tokens')
+        assert.equal(Number(receipt.logs[1].args.value), 0, 'logs the amount approved')
+      })
+
+      it('should deduct the amount from the sending account', async () => {
+        assert.equal(Number(await coinInstance.balanceOf(fromAccount)), 84)
+      })
+
+      it('should add the amount to the receiving account', async () => {
+        assert.equal(Number(await coinInstance.balanceOf(toAccount)), 10)
+      })
+
+      it('should deduct the amount from the allowance', async () => {
+        assert.equal(Number(await coinInstance.allowance(fromAccount, spendingAccount)), 0)
+      })
     })
   })
 });
