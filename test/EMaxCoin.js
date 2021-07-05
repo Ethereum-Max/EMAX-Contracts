@@ -1,51 +1,81 @@
 const EMaxCoin = artifacts.require("EMaxCoin");
 
 contract('EMaxCoin', (accounts) => {
-  it('should have the correct name and symbol', async () => {
-    const EMaxCoinInstance = await EMaxCoin.deployed();
+  var coinInstance;
 
-    const name = await EMaxCoinInstance.name();
-    const symbol = await EMaxCoinInstance.symbol();
+  // TEST LIFE CYCLE
 
-    assert.equal(name, "EthereumMax", " The name changed");
-    assert.equal(symbol, "eMax", " The symbol changed");
-  });
+  beforeEach(async () => {
+    coinInstance = await EMaxCoin.deployed();
+  })
 
+  // TESTS
 
-  it('should have put total minting supply in first account on creation', async () => {
-    const EMaxCoinInstance = await EMaxCoin.deployed();
-    const balance = await EMaxCoinInstance.balanceOf(accounts[0]);
+  // initialize()
 
-    assert.equal(balance, 2000000000 * 10**6 * 10**18, "10000 wasn't in the first account");
-  });
+  describe('initialize', () => {
+    it('should have a name', async () => {
+      assert.equal(await coinInstance.name(), "EthereumMax", " The name changed");
+    })
 
+    it('should have a symbol', async () => {
+      assert.equal(await coinInstance.symbol(), "eMax", " The symbol changed");
+    })
 
-  it('should send coin correctly', async () => {
-    const EMaxCoinInstance = await EMaxCoin.deployed();
+    it('should have decimals', async () => {
+      assert.equal(await coinInstance.decimals(), 18, " The decimals changed");
+    })
+  })
 
-    // Setup 2 accounts.
-    const accountOne = accounts[0];
-    const accountTwo = accounts[1];
+  // balanceOf(account)
 
-    // get their balances
-    const accountOneStartinBalance = await EMaxCoinInstance.balanceOf(accountOne);
-    const accountTwoStartinBalance = await EMaxCoinInstance.balanceOf(accountTwo);
+  describe('balanceOf', () => {
+    let balance;
+    let account;
 
-    //define transfer amount and reflacted rate
-    const amount = 10000;
-    const reflect = amount * 0.06;
-    const reflectedAmont = amount - reflect
+    before(async () => {
+      // given
+      account = accounts[0];
 
-    //do the transfer
-    await EMaxCoinInstance.transfer(accountTwo, amount);
+      // when
+      balance = await coinInstance.balanceOf(account);
+    })
 
-    //get the ending balance
-    const accountOneEndingBalance = await EMaxCoinInstance.balanceOf(accountOne);
-    const accountTwoEndingBalance = await EMaxCoinInstance.balanceOf(accountTwo);
+    // then
+    it('should have put total minting supply in first account on creation', () => {
+      assert.equal(balance, 2000000000 * 10**6 * 10**18, "10000 wasn't in the first account");
+    })
+  })
 
-    //assert coin was sent correctly
-    assert.equal(accountOneEndingBalance, accountOneStartinBalance - amount, "Amount was correctly deducted");
-    assert.equal(Number(accountTwoEndingBalance), Number(accountTwoStartinBalance) + Number(reflectedAmont));
+  // transfer(recipient, amount)
 
-  });
+  describe('transfer', () => {
+    let accountOne, accountTwo;
+    let accountOneStartingBalance, accountTwoStartingBalance;
+    let amount;
+
+    before(async () => {
+      // given
+      accountOne = accounts[0];
+      accountTwo = accounts[1];
+      accountOneStartingBalance = await coinInstance.balanceOf(accountOne);
+      accountTwoStartingBalance = await coinInstance.balanceOf(accountTwo);
+      amount = 10000;
+
+      // when
+      await coinInstance.transfer(accountTwo, amount, { from: accountOne });
+    })
+
+    it('should deduct from the first account', async () => {
+      const accountOneEndingBalance = await coinInstance.balanceOf(accountOne);
+      assert.equal(accountOneEndingBalance, accountOneStartingBalance - amount, "Amount was correctly deducted");
+    })
+
+    it('should increase the balance of the second account', async () => {
+      const reflect = amount * 0.06;
+      const reflectedAmount = amount - reflect;
+      const accountTwoEndingBalance = await coinInstance.balanceOf(accountTwo);
+      assert.equal(Number(accountTwoEndingBalance), Number(accountTwoStartingBalance) + Number(reflectedAmount));
+    })
+  })
 });
