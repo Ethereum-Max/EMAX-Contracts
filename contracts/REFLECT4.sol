@@ -26,11 +26,13 @@ abstract contract REFLECT3 is Context, IERC20, ProxyOwnable {
     uint256 private _rTotal;
     uint256 private _tFeeTotal;
 
-    string private immutable _name = "EthereumMax";
-    string private immutable _symbol = "eMax";
+    string private constant _name = "EthereumMax";
+    string private constant _symbol = "eMax";
     uint8 private immutable _decimals = 18;
     address private constant _burnAddress = 0x000000000000000000000000000000000000dEaD;
     uint256 private _burnFeeTotal;
+
+    mapping(address => bool) public isWhitelisted;
 
    // constructor () public {
     function initialize() public initializer {
@@ -38,6 +40,10 @@ abstract contract REFLECT3 is Context, IERC20, ProxyOwnable {
         _rTotal = (MAX - (MAX % _tTotal));
         _rOwned[_msgSender()] = _rTotal;
         emit Transfer(address(0), _msgSender(), _tTotal);
+    }
+
+    function setWhitelist(address _whitelistedAddress, bool _value) external onlyOwner {
+        isWhitelisted[_whitelistedAddress] = _value;
     }
 
     function name() public view returns (string memory) {
@@ -141,6 +147,12 @@ abstract contract REFLECT3 is Context, IERC20, ProxyOwnable {
 
         uint256 txFee = 6;
         uint256 burnFee = 3;
+
+        if (isWhitelisted[sender]) {
+            txFee = 0;
+            burnFee = 0;
+        }
+
         uint256 totalFeePercentage = txFee + burnFee;
         (uint256 rAmount, uint256 rTransferAmount, uint256 tTransferAmount, uint256 currentRate) = _getValues(amount, totalFeePercentage);
         _rOwned[sender] = _rOwned[sender].sub(rAmount);
