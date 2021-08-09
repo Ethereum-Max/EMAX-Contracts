@@ -10,7 +10,7 @@ import "./ProxyOwnable.sol";
 
 
 
-abstract contract REFLECT3 is Context, IERC20, ProxyOwnable {
+abstract contract REFLECT4 is Context, IERC20, ProxyOwnable {
     using SafeMath for uint256;
     using Address for address;
 
