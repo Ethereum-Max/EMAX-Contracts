@@ -26,9 +26,9 @@ abstract contract REFLECT4 is Context, IERC20, ProxyOwnable {
     uint256 private _rTotal;
     uint256 private _tFeeTotal;
 
-    string private constant _name = "EthereumMax";
-    string private constant _symbol = "eMax";
-    uint8 private immutable _decimals = 18;
+    string private _name = "EthereumMax";
+    string private _symbol = "eMax";
+    uint8 private _decimals = 18;
     address private constant _burnAddress = 0x000000000000000000000000000000000000dEaD;
     uint256 private _burnFeeTotal;
 
@@ -38,6 +38,10 @@ abstract contract REFLECT4 is Context, IERC20, ProxyOwnable {
     function initialize() public initializer {
         ownerInitialize();
         _rTotal = (MAX - (MAX % _tTotal));
+        _name = "EthereumMax";
+        _symbol = "eMax";
+        _decimals = 18;
+
         _rOwned[_msgSender()] = _rTotal;
         emit Transfer(address(0), _msgSender(), _tTotal);
     }
