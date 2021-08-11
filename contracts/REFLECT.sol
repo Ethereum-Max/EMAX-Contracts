@@ -31,7 +31,7 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
     uint8 private _decimals;
 
 
-   // constructor () public {
+    // constructor () public {
     function initialize() public initializer {
         ownerInitialize();
         _rTotal = (MAX - (MAX % _tTotal));
@@ -239,7 +239,7 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
 
     function excludeAccount(address account) external onlyOwner() {
         require(!_isExcluded[account], "Account is already excluded");
-        if(_rOwned[account] > 0) {
+        if (_rOwned[account] > 0) {
             _tOwned[account] = tokenFromReflection(_rOwned[account]);
         }
         _isExcluded[account] = true;

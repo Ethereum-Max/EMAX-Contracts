@@ -34,7 +34,7 @@ abstract contract REFLECT4 is Context, IERC20, ProxyOwnable {
 
     mapping(address => bool) public isWhitelisted;
 
-   // constructor () public {
+    // constructor () public {
     function initialize() public initializer {
         ownerInitialize();
         _rTotal = (MAX - (MAX % _tTotal));
@@ -214,7 +214,7 @@ abstract contract REFLECT4 is Context, IERC20, ProxyOwnable {
 
     function excludeAccount(address account) external onlyOwner() {
         require(!_isExcluded[account], "Account is already excluded");
-        if(_rOwned[account] > 0) {
+        if (_rOwned[account] > 0) {
             _tOwned[account] = tokenFromReflection(_rOwned[account]);
         }
         _isExcluded[account] = true;
