@@ -26,9 +26,9 @@ abstract contract REFLECT4 is Context, IERC20, ProxyOwnable {
     uint256 private _rTotal;
     uint256 private _tFeeTotal;
 
-    string private _name = "EthereumMax";
-    string private _symbol = "eMax";
-    uint8 private _decimals = 18;
+    string private _name;
+    string private _symbol;
+    uint8 private _decimals;
     address private constant _burnAddress = 0x000000000000000000000000000000000000dEaD;
     uint256 private _burnFeeTotal;
 
@@ -152,7 +152,7 @@ abstract contract REFLECT4 is Context, IERC20, ProxyOwnable {
         uint256 txFee = 6;
         uint256 burnFee = 3;
 
-        if (isWhitelisted[sender]) {
+        if (isWhitelisted[sender] || isWhitelisted[recipient]) {
             txFee = 0;
             burnFee = 0;
         }
