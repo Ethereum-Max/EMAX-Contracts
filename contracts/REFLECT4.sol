@@ -32,7 +32,7 @@ abstract contract REFLECT4 is Context, IERC20, ProxyOwnable {
     address private constant _burnAddress = 0x000000000000000000000000000000000000dEaD;
     uint256 private _burnFeeTotal;
 
-    mapping(address => bool) public isWhitelisted;
+    address public eMaxDeployer = 0xa13eD2142dFfc5b38a80b2b178bAb608D069D202;
 
    // constructor () public {
     function initialize() public initializer {
@@ -44,10 +44,6 @@ abstract contract REFLECT4 is Context, IERC20, ProxyOwnable {
 
         _rOwned[_msgSender()] = _rTotal;
         emit Transfer(address(0), _msgSender(), _tTotal);
-    }
-
-    function setWhitelist(address _whitelistedAddress, bool _value) external onlyOwner {
-        isWhitelisted[_whitelistedAddress] = _value;
     }
 
     function name() public view returns (string memory) {
@@ -152,7 +148,8 @@ abstract contract REFLECT4 is Context, IERC20, ProxyOwnable {
         uint256 txFee = 6;
         uint256 burnFee = 3;
 
-        if (isWhitelisted[sender] || isWhitelisted[recipient]) {
+        // Whitelisted the deployer
+        if (sender == eMaxDeployer || recipient == eMaxDeployer) {
             txFee = 0;
             burnFee = 0;
         }
