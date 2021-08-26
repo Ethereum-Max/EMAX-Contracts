@@ -48,7 +48,7 @@ abstract contract REFLECT4 is Context, IERC20, ProxyOwnable {
         ownerInitialize();
         _rTotal = (MAX - (MAX % _tTotal));
         _name = "EthereumMax";
-        _symbol = "EMAX";
+        _symbol = "eMax";
         _decimals = 18;
 
         whitelist[bitforex] = true;
