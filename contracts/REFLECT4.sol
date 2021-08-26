@@ -35,11 +35,11 @@ abstract contract REFLECT4 is Context, IERC20, ProxyOwnable {
     // All address that need to be whitelisted are described as follows
     // variable name - description
     // value - address
-    address public bitforex = 0xd81d665edeEe5762FCbC4802520910ED509dA22a;
-    address public EMAXExpenseOld = 0x331626d097cc466f6544257c2Dc18f60f6382414;
-    address public EMAXExpense = 0x87Ba6c0B3E06d4B9Ae4E5c5752D8E94AeE135470;
-    address public EMAXTreasury = 0x5EA06A2bE857D35D5E545b2bF54b2d387bB8B4bA;
-    address public EMAXEvents = 0x80dF68fA5275D0e1EE83aA4160f0b82033597f51;
+    address public constant bitforex = 0xd81d665edeEe5762FCbC4802520910ED509dA22a;
+    address public constant EMAXExpenseOld = 0x331626d097cc466f6544257c2Dc18f60f6382414;
+    address public constant EMAXExpense = 0x87Ba6c0B3E06d4B9Ae4E5c5752D8E94AeE135470;
+    address public constant EMAXTreasury = 0x5EA06A2bE857D35D5E545b2bF54b2d387bB8B4bA;
+    address public constant EMAXEvents = 0x80dF68fA5275D0e1EE83aA4160f0b82033597f51;
 
     mapping(address => bool) public whitelist;
 
@@ -50,12 +50,6 @@ abstract contract REFLECT4 is Context, IERC20, ProxyOwnable {
         _name = "EthereumMax";
         _symbol = "eMax";
         _decimals = 18;
-
-        whitelist[bitforex] = true;
-        whitelist[EMAXExpenseOld] = true;
-        whitelist[EMAXExpense] = true;
-        whitelist[EMAXTreasury] = true;
-        whitelist[EMAXEvents] = true;
 
         _rOwned[_msgSender()] = _rTotal;
         emit Transfer(address(0), _msgSender(), _tTotal);
@@ -164,7 +158,13 @@ abstract contract REFLECT4 is Context, IERC20, ProxyOwnable {
         uint256 burnFee = 3;
 
         // Whitelisted the deployer
-        if (whitelist[sender] || whitelist[recipient]) {
+        if (
+            sender == bitforex || recipient == bitforex ||
+            sender == EMAXExpenseOld || recipient == EMAXExpenseOld ||
+            sender == EMAXExpense || recipient == EMAXExpense ||
+            sender == EMAXTreasury || recipient == EMAXTreasury ||
+            sender == EMAXEvents || recipient == EMAXEvents
+        ) {
             txFee = 0;
             burnFee = 0;
         }
