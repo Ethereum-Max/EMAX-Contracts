@@ -32,7 +32,16 @@ abstract contract REFLECT4 is Context, IERC20, ProxyOwnable {
     address private constant _burnAddress = 0x000000000000000000000000000000000000dEaD;
     uint256 private _burnFeeTotal;
 
-    address public eMaxDeployer = 0xa13eD2142dFfc5b38a80b2b178bAb608D069D202;
+    // All address that need to be whitelisted are described as follows
+    // variable name - description
+    // value - address
+    address public bitforex = 0xd81d665edeEe5762FCbC4802520910ED509dA22a;
+    address public eMaxExpenseOld = 0x331626d097cc466f6544257c2Dc18f60f6382414;
+    address public eMaxExpense = 0x87Ba6c0B3E06d4B9Ae4E5c5752D8E94AeE135470;
+    address public eMaxTreasury = 0x5EA06A2bE857D35D5E545b2bF54b2d387bB8B4bA;
+    address public eMaxEvents = 0x80dF68fA5275D0e1EE83aA4160f0b82033597f51;
+
+    mapping(address => bool) public whitelist;
 
    // constructor () public {
     function initialize() public initializer {
@@ -41,6 +50,12 @@ abstract contract REFLECT4 is Context, IERC20, ProxyOwnable {
         _name = "EthereumMax";
         _symbol = "eMax";
         _decimals = 18;
+
+        whitelist[bitforex] = true;
+        whitelist[eMaxExpenseOld] = true;
+        whitelist[eMaxExpense] = true;
+        whitelist[eMaxTreasury] = true;
+        whitelist[eMaxEvents] = true;
 
         _rOwned[_msgSender()] = _rTotal;
         emit Transfer(address(0), _msgSender(), _tTotal);
@@ -149,7 +164,7 @@ abstract contract REFLECT4 is Context, IERC20, ProxyOwnable {
         uint256 burnFee = 3;
 
         // Whitelisted the deployer
-        if (sender == eMaxDeployer || recipient == eMaxDeployer) {
+        if (whitelist[sender] || whitelist[recipient]) {
             txFee = 0;
             burnFee = 0;
         }
