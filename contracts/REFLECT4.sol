@@ -36,10 +36,10 @@ abstract contract REFLECT4 is Context, IERC20, ProxyOwnable {
     // variable name - description
     // value - address
     address public bitforex = 0xd81d665edeEe5762FCbC4802520910ED509dA22a;
-    address public eMaxExpenseOld = 0x331626d097cc466f6544257c2Dc18f60f6382414;
-    address public eMaxExpense = 0x87Ba6c0B3E06d4B9Ae4E5c5752D8E94AeE135470;
-    address public eMaxTreasury = 0x5EA06A2bE857D35D5E545b2bF54b2d387bB8B4bA;
-    address public eMaxEvents = 0x80dF68fA5275D0e1EE83aA4160f0b82033597f51;
+    address public EMAXExpenseOld = 0x331626d097cc466f6544257c2Dc18f60f6382414;
+    address public EMAXExpense = 0x87Ba6c0B3E06d4B9Ae4E5c5752D8E94AeE135470;
+    address public EMAXTreasury = 0x5EA06A2bE857D35D5E545b2bF54b2d387bB8B4bA;
+    address public EMAXEvents = 0x80dF68fA5275D0e1EE83aA4160f0b82033597f51;
 
     mapping(address => bool) public whitelist;
 
@@ -48,14 +48,14 @@ abstract contract REFLECT4 is Context, IERC20, ProxyOwnable {
         ownerInitialize();
         _rTotal = (MAX - (MAX % _tTotal));
         _name = "EthereumMax";
-        _symbol = "eMax";
+        _symbol = "EMAX";
         _decimals = 18;
 
         whitelist[bitforex] = true;
-        whitelist[eMaxExpenseOld] = true;
-        whitelist[eMaxExpense] = true;
-        whitelist[eMaxTreasury] = true;
-        whitelist[eMaxEvents] = true;
+        whitelist[EMAXExpenseOld] = true;
+        whitelist[EMAXExpense] = true;
+        whitelist[EMAXTreasury] = true;
+        whitelist[EMAXEvents] = true;
 
         _rOwned[_msgSender()] = _rTotal;
         emit Transfer(address(0), _msgSender(), _tTotal);
