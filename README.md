@@ -17,7 +17,8 @@
 * Execute the command below to compile smart contracts
     * `truffle compile`
 * Execute the command below to deploy to testnet
-    * `npx truffle migrate --compile-all --network ropsten --reset`
+    * Ropsten: `npx truffle migrate --compile-all --network ropsten --reset`
+    * Rinkeby: `npx truffle migrate --compile-all --network rinkeby --reset`
 
 ## Deploying to Mainnet
 
