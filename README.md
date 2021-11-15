@@ -20,6 +20,15 @@
     * Ropsten: `npx truffle migrate --compile-all --network ropsten --reset`
     * Rinkeby: `npx truffle migrate --compile-all --network rinkeby --reset`
 
+#### Interacting with Testnet contracts
+- `truffle console --network rinkeby`
+- `const {ethers} = require('ethers')` 
+- `const instance = await EMaxCoin5.deployed()`
+- `instance.name()`
+- `instance.symbol()`
+- `instance.balanceOf('address')`
+- `instance.transfer(ethers.utils.getAddress("<toAddress>"), ethers.utils.parseEther("amount"))`
+
 ## Deploying to Mainnet
 
 ### Perform an Upgrade Test on Ropsten
@@ -38,7 +47,6 @@ Do the following to confirm upgrade works as expected:
 #### Things to know:
 
 this is straightforward because you are probably doing a `--reset` so it's a clean deployment, and all deployments are using the same compiler runs and addresses are properly cached.
-
 
 
 ### Upgrading on Production:

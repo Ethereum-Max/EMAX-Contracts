@@ -20,9 +20,7 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
     address[] private _excluded;
 
     uint256 private constant MAX = ~uint256(0);
-    uint256 private constant MAXed = ~uint256(0);
-    // initial total supply of tokens
-    uint256 private constant _tTotal = 2000000000 * 10**6 * 10**18; // was a constant, but cannot be if tokens are burned.
+    uint256 private constant _tTotal = 2000000000 * 10**6 * 10**18;
     uint256 private _rTotal;
     uint256 private _tFeeTotal;
 
@@ -46,13 +44,13 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
     address public constant EMAXExpense =
         0x87Ba6c0B3E06d4B9Ae4E5c5752D8E94AeE135470;
     address public constant EMAXTreasury =
-        0x5EA06A2bE857D35D5E545b2bF54b2d387bB8B4bA;
+        0xC2bD4Fa73015C821489259CF463DaFD68fFFF37e; // rinkeby gnosis safe
     address public constant EMAXEvents =
         0x80dF68fA5275D0e1EE83aA4160f0b82033597f51;
 
     mapping(address => bool) public whitelist;
 
-    // constructor () public {
+    //constructor() {
     function initialize() public initializer {
         ownerInitialize();
         _rTotal = (MAX - (MAX % _tTotal));
@@ -77,17 +75,9 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
     }
 
     function totalSupply() public pure override returns (uint256) {
+        // ideally, but we are restricted to only upgrading a pure function
+        // return _tTotal.sub(_burnFeeTotal);
         return _tTotal;
-    }
-
-    // un-used function
-    function totalMAX() public view returns (uint256) {
-        return MAXed;
-    }
-
-    // un-used function
-    function ourSupply() public view returns (uint256) {
-        return _rTotal;
     }
 
     function balanceOf(address account) public view override returns (uint256) {
@@ -238,8 +228,18 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
         require(amount > 0, "Transfer amount must be greater than zero");
 
         // transaction fees
-        uint256 txFee = 6; // reflection fee
+        //uint256 txFee = 6; // reflection fee
         uint256 burnFee = 3; // burn fee
+
+        (
+            uint256 rAmount,
+            uint256 rTransferAmount,
+            uint256 rFee,
+            uint256 tTransferAmount,
+            uint256 tFee // 6% reflective
+        ) = getValues(amount);
+
+        uint256 currentRate = _getRate();
 
         // Whitelisted the deployer
         // more incoming!
@@ -257,22 +257,13 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
             sender == EMAXMint ||
             recipient == EMAXMint
         ) {
-            txFee = 0;
+            tFee = 0;
+            rFee = 0;
+            tTransferAmount = 0;
+            rAmount = amount * currentRate;
+            rTransferAmount = rAmount;
             burnFee = 0;
         }
-
-        // Now un-used, not sure what original purpose of this was.
-        // uint256 totalFeePercentage = txFee + burnFee;
-
-        (
-            uint256 rAmount,
-            uint256 rTransferAmount,
-            uint256 rFee,
-            uint256 tTransferAmount,
-            uint256 tFee
-        ) = getValues(amount);
-
-        uint256 currentRate = _getRate();
 
         _rOwned[sender] = _rOwned[sender].sub(rAmount);
 
@@ -294,6 +285,7 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
 
         // Burn
         uint256 tBurn = amount.mul(burnFee).div(100);
+
         uint256 rBurn = tBurn.mul(currentRate);
         _burnTokens(sender, tBurn, rBurn);
     }
@@ -327,8 +319,6 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
             tFee,
             currentRate
         );
-
-        //Moved to _getTValues & _getRValues
         //uint256 totalFee = tAmount.mul(totalFeePercentage).div(100);
 
         //uint256 tTransferAmount = tAmount.sub(totalFee); // this line subracts fee from the total being sent... I dont believe this is desirable.
@@ -338,6 +328,39 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
         //uint256 rFee = totalFee.mul(currentRate);
         //uint256 rTransferAmount = rAmount.sub(rFee);
         return (rAmount, rTransferAmount, rFee, tTransferAmount, tFee);
+    }
+
+    // NEW
+    function _getTValues(uint256 tAmount)
+        private
+        pure
+        returns (uint256, uint256)
+    {
+        // reflective protocol is 1% hence the div(100), added in mul(6)
+        // eMax is 6%
+        uint256 tFee = tAmount.mul(6).div(100);
+        uint256 tTransferAmount = tAmount.sub(tFee);
+        return (tTransferAmount, tFee);
+    }
+
+    // NEW
+    function _getRValues(
+        uint256 tAmount,
+        uint256 tFee,
+        uint256 currentRate
+    )
+        private
+        pure
+        returns (
+            uint256,
+            uint256,
+            uint256
+        )
+    {
+        uint256 rAmount = tAmount.mul(currentRate);
+        uint256 rFee = tFee.mul(currentRate);
+        uint256 rTransferAmount = rAmount.sub(rFee);
+        return (rAmount, rTransferAmount, rFee);
     }
 
     function _getRate() public view returns (uint256) {
@@ -405,45 +428,15 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
         if (_isExcluded[_burnAddress])
             _tOwned[_burnAddress] = _tOwned[_burnAddress].add(tBurn);
 
-        //emit Transfer(sender, _burnAddress, tBurn);
-        // reduce _tTotal
-        //_tTotalBurn = _tTotalBurn - tBurn;
+        //emit Transfer(sender, _burnAddress, tBurn); // this produces double transfer in etherscan. Traditional ERC20s use the _burn() functuion which etherscan ignores transfers from.
+
+        // reduce _tTotal, but not possible without bricking the 'Max Total Supply' etherscan value.
+        //_tTotal = _tTotal - tBurn;
+
         // reduce _rtotal
-        //_rTotal = _rTotal - rBurn;
+        _rTotal = _rTotal - rBurn;
+
+        //update '_burnFeeTotal' for total supply function to be accurate.
         _burnFeeTotal = _burnFeeTotal.add(tBurn);
-    }
-
-    //------------ get t and r values------------
-    // NEW
-    function _getTValues(uint256 tAmount)
-        private
-        pure
-        returns (uint256, uint256)
-    {
-        // reflective protocol is 1% hence the div(100), I added in mul(6)
-        // eMax is 6%
-        uint256 tFee = tAmount.mul(6).div(100);
-        uint256 tTransferAmount = tAmount.sub(tFee);
-        return (tTransferAmount, tFee);
-    }
-
-    // NEW
-    function _getRValues(
-        uint256 tAmount,
-        uint256 tFee,
-        uint256 currentRate
-    )
-        private
-        pure
-        returns (
-            uint256,
-            uint256,
-            uint256
-        )
-    {
-        uint256 rAmount = tAmount.mul(currentRate);
-        uint256 rFee = tFee.mul(currentRate);
-        uint256 rTransferAmount = rAmount.sub(rFee);
-        return (rAmount, rTransferAmount, rFee);
     }
 }
