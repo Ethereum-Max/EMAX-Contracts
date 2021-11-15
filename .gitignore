@@ -5,3 +5,4 @@ bin/*
 .openzeppelin/unknown-1337.json
 secrets.json
 package-lock.json
+build/
