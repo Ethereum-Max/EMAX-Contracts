@@ -20,6 +20,7 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
     address[] private _excluded;
 
     uint256 private constant MAX = ~uint256(0);
+    // V should be uint256 private _totalSupply and if a new variable totalSupply was created to overwrite this one, all user balances would be lost on upgrade.
     uint256 private constant _tTotal = 2000000000 * 10**6 * 10**18;
     uint256 private _rTotal;
     uint256 private _tFeeTotal;
@@ -276,16 +277,12 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
             _tOwned[recipient] = _tOwned[recipient].add(tTransferAmount);
         }
 
-        // txfee is 6% but not for whitelist
-        //uint256 tFee = amount.mul(txFee).div(100);
-        // deflation amount for bank ratio
-        //uint256 rFee = tFee.mul(currentRate);
+        // reflect fees to all balances. Subtract from _rTotal.
         _reflectFee(rFee, tFee);
+        // emit transfer
         emit Transfer(sender, recipient, tTransferAmount);
-
         // Burn
         uint256 tBurn = amount.mul(burnFee).div(100);
-
         uint256 rBurn = tBurn.mul(currentRate);
         _burnTokens(sender, tBurn, rBurn);
     }

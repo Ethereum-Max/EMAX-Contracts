@@ -23,7 +23,7 @@
 #### Interacting with Testnet contracts
 - `truffle console --network rinkeby`
 - `const {ethers} = require('ethers')` 
-- `const instance = await EMaxCoin5.deployed()`
+- `const instance = await EMaxCoin5.deployed()` or `let instance = await EMaxCoin5.at("<contractAddress>")`
 - `instance.name()`
 - `instance.symbol()`
 - `instance.balanceOf('address')`
@@ -46,7 +46,7 @@ Do the following to confirm upgrade works as expected:
 
 #### Things to know:
 
-this is straightforward because you are probably doing a `--reset` so it's a clean deployment, and all deployments are using the same compiler runs and addresses are properly cached.
+This is straightforward because you are probably doing a `--reset` so it's a clean deployment, and all deployments are using the same compiler runs and addresses are properly cached.
 
 
 ### Upgrading on Production:
