@@ -7,8 +7,8 @@
 * Install NodeJS
 
 
-## Deploying To Test Net
-For local testing comment out initializer function and uncomment constructor. Also, remove ProxyOwnable inheritance. Revert to the initializer method when migrating with truffle to a testnet or mainnet. Further reading on openZeppelin upgrade contracts and the use of `unsafeAllow: ['delegatecall']` can be found here: https://docs.openzeppelin.com/upgrades-plugins/1.x/ and https://github.com/OpenZeppelin/openzeppelin-upgrades/issues/455.
+## Deploying to Testnet
+For local testing comment out initializer function and uncomment constructor. Also, remove ProxyOwnable inheritance. Revert to the initializer method when migrating with truffle to a testnet or mainnet. 
 
 * **_Single line view_**
 	* `git pull --all; npm install; truffle compile; npx truffle migrate --compile-all --network ropsten --reset`
