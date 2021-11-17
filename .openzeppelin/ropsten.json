@@ -9,6 +9,36 @@
       "address": "0x1df92D6c0Ef1ea101Ca9535E97F9301574FdD702",
       "txHash": "0x724fbdce1f0eb7e7c111a1a1d2ff9c848833e43ab93d970a21625bbc1bbacc9a",
       "kind": "transparent"
+    },
+    {
+      "address": "0x17a2D1AfF979191E207C1A3C1E6c0f71ff5972A4",
+      "txHash": "0x2bcd3e0a0778edc0fc871a68b750ed8700a53c58215d2b9d38efc55808855b4e",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xBa53E48aEC10fC5474622Af9a699C6637C0EB9Ff",
+      "txHash": "0x20f0e2784598d1616eaab2136175ec2eadbd004b6b75d2cddb5128f916b0ded9",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xE288323C61B63A19398950f3B74Fd2E1197B89D9",
+      "txHash": "0xa5417cd0948595c6668f6317a40427f023ebefc7113f45292279727e6e4a19ec",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x31B5e1f00D46a9dEE452eaCcCE42ff1d92AE2BE5",
+      "txHash": "0x12c577c7d2493f06f4943f4d7f309e9611c9de556034f197e0bf6f6c6e0f34f0",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x6A42e1E9EfB7Ad2DD2765295e8D6f8E56828b117",
+      "txHash": "0xc78b9ef38ad50b94df9558109d7b1b96cd7281cd032250b564a1a3c975f88467",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x48fa3265eD716444C2BfF77bD9725e179b43b8D4",
+      "txHash": "0x0359a2c0bb1f06708da761f78970dd54aa98bb7719b81712d0ade16e47c8b141",
+      "kind": "transparent"
     }
   ],
   "impls": {
@@ -21,79 +51,79 @@
             "contract": "Initializable",
             "label": "_initialized",
             "type": "t_bool",
-            "src": "../@openzeppelin/contracts/proxy/utils/Initializable.sol:23"
+            "src": "..\\@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:21"
           },
           {
             "contract": "Initializable",
             "label": "_initializing",
             "type": "t_bool",
-            "src": "../@openzeppelin/contracts/proxy/utils/Initializable.sol:28"
+            "src": "..\\@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:26"
           },
           {
             "contract": "ProxyOwnable",
             "label": "_owner",
             "type": "t_address",
-            "src": "ProxyOwnable.sol:20"
+            "src": "..\\project:\\contracts\\ProxyOwnable.sol:20"
           },
           {
             "contract": "REFLECT",
             "label": "_rOwned",
             "type": "t_mapping(t_address,t_uint256)",
-            "src": "REFLECT.sol:17"
+            "src": "..\\project:\\contracts\\REFLECT.sol:17"
           },
           {
             "contract": "REFLECT",
             "label": "_tOwned",
             "type": "t_mapping(t_address,t_uint256)",
-            "src": "REFLECT.sol:18"
+            "src": "..\\project:\\contracts\\REFLECT.sol:18"
           },
           {
             "contract": "REFLECT",
             "label": "_allowances",
             "type": "t_mapping(t_address,t_mapping(t_address,t_uint256))",
-            "src": "REFLECT.sol:19"
+            "src": "..\\project:\\contracts\\REFLECT.sol:19"
           },
           {
             "contract": "REFLECT",
             "label": "_isExcluded",
             "type": "t_mapping(t_address,t_bool)",
-            "src": "REFLECT.sol:21"
+            "src": "..\\project:\\contracts\\REFLECT.sol:21"
           },
           {
             "contract": "REFLECT",
             "label": "_excluded",
             "type": "t_array(t_address)dyn_storage",
-            "src": "REFLECT.sol:22"
+            "src": "..\\project:\\contracts\\REFLECT.sol:22"
           },
           {
             "contract": "REFLECT",
             "label": "_rTotal",
             "type": "t_uint256",
-            "src": "REFLECT.sol:26"
+            "src": "..\\project:\\contracts\\REFLECT.sol:26"
           },
           {
             "contract": "REFLECT",
             "label": "_tFeeTotal",
             "type": "t_uint256",
-            "src": "REFLECT.sol:27"
+            "src": "..\\project:\\contracts\\REFLECT.sol:27"
           },
           {
             "contract": "REFLECT",
             "label": "_name",
             "type": "t_string_storage",
-            "src": "REFLECT.sol:29"
+            "src": "..\\project:\\contracts\\REFLECT.sol:29"
           },
           {
             "contract": "REFLECT",
             "label": "_symbol",
             "type": "t_string_storage",
-            "src": "REFLECT.sol:30"
+            "src": "..\\project:\\contracts\\REFLECT.sol:30"
           },
           {
             "contract": "REFLECT",
             "label": "_decimals",
             "type": "t_uint8",
-            "src": "REFLECT.sol:31"
+            "src": "..\\project:\\contracts\\REFLECT.sol:31"
           }
         ],
         "types": {

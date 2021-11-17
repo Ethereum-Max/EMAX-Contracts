@@ -7,7 +7,9 @@
 * Install NodeJS
 
 
-## Deploying To Test Net
+## Deploying to Testnet
+For local testing comment out initializer function and uncomment constructor. Also, remove ProxyOwnable inheritance. Revert to the initializer method when migrating with truffle to a testnet or mainnet. 
+
 * **_Single line view_**
 	* `git pull --all; npm install; truffle compile; npx truffle migrate --compile-all --network ropsten --reset`
 * Execute the command below to pull in all the most recent changes
@@ -17,7 +19,33 @@
 * Execute the command below to compile smart contracts
     * `truffle compile`
 * Execute the command below to deploy to testnet
-    * `npx truffle migrate --compile-all --network ropsten --reset`
+    * Ropsten: `npx truffle migrate --compile-all --network ropsten --reset`
+    * Rinkeby: `npx truffle migrate --compile-all --network rinkeby --reset`
+
+#### Interacting with Testnet contracts
+- `truffle console --network rinkeby`
+- `const {ethers} = require('ethers')` 
+- `const instance = await EMaxCoin5.deployed()` or `let instance = await EMaxCoin5.at("<contractAddress>")`
+- `instance.name()`
+- `instance.symbol()`
+- `instance.balanceOf('address')`
+- `instance.transfer(ethers.utils.getAddress("<toAddress>"), ethers.utils.parseEther("amount"))`
+- `instance.<VariableName>.call().then(function (res) {console.log(res)})`
+
+#### generating Uniswap Pair contract address for testing
+
+```
+address factory = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
+address token0 = 0x15874d65e649880c2614e7a480cb7c9A55787FF6; // mainnet: eMax, rinkeby: eMax
+address token1 = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; // mainnet: wETH (0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2), rinkeby: wETH (0xc778417E063141139Fce010982780140Aa0cD5Ab)
+
+address pair = address(uint160(uint(keccak256(abi.encodePacked(
+    hex'ff',
+    factory,
+    keccak256(abi.encodePacked(token0, token1)),
+    hex'96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f'
+)))));
+```
 
 ## Deploying to Mainnet
 
@@ -36,8 +64,7 @@ Do the following to confirm upgrade works as expected:
 
 #### Things to know:
 
-this is straightforward because you are probably doing a `--reset` so it's a clean deployment, and all deployments are using the same compiler runs and addresses are properly cached.
-
+This is straightforward because you are probably doing a `--reset` so it's a clean deployment, and all deployments are using the same compiler runs and addresses are properly cached.
 
 
 ### Upgrading on Production:

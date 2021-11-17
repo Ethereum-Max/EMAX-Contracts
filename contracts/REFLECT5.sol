@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-only
+
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/Context.sol";
@@ -7,7 +8,7 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "./ProxyOwnable.sol";
 
-abstract contract REFLECT is Context, IERC20, ProxyOwnable {
+contract REFLECT5 is Context, IERC20, ProxyOwnable {
     using SafeMath for uint256;
     using Address for address;
 
@@ -26,14 +27,39 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
     string private _name;
     string private _symbol;
     uint8 private _decimals;
+    address private constant _burnAddress =
+        0x000000000000000000000000000000000000dEaD;
+    uint256 private _burnFeeTotal;
 
-    // constructor () public {
+    // All address that need to be whitelisted are described as follows
+    // variable name - description
+    // value - address
+    //address public constant EMAXMint = 0x15874d65e649880c2614e7a480cb7c9a55787ff6;
+    address public constant EMAXMint =
+        0x263674F945b6903Cd421d755337710DD8083fcC1;
+    address public constant bitforex =
+        0xd81d665edeEe5762FCbC4802520910ED509dA22a;
+    address public constant EMAXExpenseOld =
+        0x331626d097cc466f6544257c2Dc18f60f6382414;
+    address public constant EMAXExpense =
+        0x87Ba6c0B3E06d4B9Ae4E5c5752D8E94AeE135470;
+    address public constant EMAXTreasury =
+        0x5EA06A2bE857D35D5E545b2bF54b2d387bB8B4bA;
+    address public constant EMAXEvents =
+        0x80dF68fA5275D0e1EE83aA4160f0b82033597f51;
+    address public constant Unicrypt =
+        0xDba68f07d1b7Ca219f78ae8582C213d975c25cAf;
+    address public constant UniswapLP =
+        0xb6CA52c7916ad7960C12Dc489FD93E5Af7cA257f; // token pair contract
+
+    mapping(address => bool) public whitelist;
+
+    //constructor() {
     function initialize() public initializer {
         ownerInitialize();
         _rTotal = (MAX - (MAX % _tTotal));
-
         _name = "EthereumMax";
-        _symbol = "eMax";
+        _symbol = "EMAX";
         _decimals = 18;
 
         _rOwned[_msgSender()] = _rTotal;
@@ -52,8 +78,8 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
         return _decimals;
     }
 
-    function totalSupply() public pure override returns (uint256) {
-        return _tTotal;
+    function totalSupply() public view override returns (uint256) {
+        return _tTotal.sub(_burnFeeTotal);
     }
 
     function balanceOf(address account) public view override returns (uint256) {
@@ -148,7 +174,7 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
             !_isExcluded[sender],
             "Excluded addresses cannot call this function"
         );
-        (uint256 rAmount, , , , ) = _getValues(tAmount);
+        (uint256 rAmount, , , , ) = _getValues(tAmount, 0);
         _rOwned[sender] = _rOwned[sender].sub(rAmount);
         _rTotal = _rTotal.sub(rAmount);
         _tFeeTotal = _tFeeTotal.add(tAmount);
@@ -161,10 +187,10 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
     {
         require(tAmount <= _tTotal, "Amount must be less than supply");
         if (!deductTransferFee) {
-            (uint256 rAmount, , , , ) = _getValues(tAmount);
+            (uint256 rAmount, , , , ) = _getValues(tAmount, 0);
             return rAmount;
         } else {
-            (, uint256 rTransferAmount, , , ) = _getValues(tAmount);
+            (, uint256 rTransferAmount, , , ) = _getValues(tAmount, 0);
             return rTransferAmount;
         }
     }
@@ -202,93 +228,74 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
         require(sender != address(0), "ERC20: transfer from the zero address");
         require(recipient != address(0), "ERC20: transfer to the zero address");
         require(amount > 0, "Transfer amount must be greater than zero");
-        if (_isExcluded[sender] && !_isExcluded[recipient]) {
-            _transferFromExcluded(sender, recipient, amount);
-        } else if (!_isExcluded[sender] && _isExcluded[recipient]) {
-            _transferToExcluded(sender, recipient, amount);
-        } else if (!_isExcluded[sender] && !_isExcluded[recipient]) {
-            _transferStandard(sender, recipient, amount);
-        } else if (_isExcluded[sender] && _isExcluded[recipient]) {
-            _transferBothExcluded(sender, recipient, amount);
-        } else {
-            _transferStandard(sender, recipient, amount);
+
+        // transaction fees
+        uint256 txFee = 0;
+        uint256 burnFee = 6;
+
+        // get amounts in 'r' space
+        (
+            uint256 rAmount,
+            uint256 rTransferAmount,
+            uint256 rFee,
+            uint256 tTransferAmount,
+            uint256 tFee // 3% treasury
+        ) = _getValues(amount, burnFee);
+        // get current rate
+        uint256 currentRate = _getRate();
+        // is sender or reciever whitelisted? If so remove 3% to treasury and 6% burn
+        if (
+            sender == bitforex ||
+            recipient == bitforex ||
+            sender == EMAXExpenseOld ||
+            recipient == EMAXExpenseOld ||
+            sender == EMAXExpense ||
+            recipient == EMAXExpense ||
+            sender == EMAXTreasury ||
+            recipient == EMAXTreasury ||
+            sender == EMAXEvents ||
+            recipient == EMAXEvents ||
+            sender == EMAXMint ||
+            recipient == EMAXMint ||
+            sender == UniswapLP ||
+            recipient == UniswapLP ||
+            sender == Unicrypt ||
+            recipient == Unicrypt
+        ) {
+            tFee = 0;
+            rFee = 0;
+            tTransferAmount = amount;
+            rAmount = amount * currentRate;
+            rTransferAmount = rAmount;
+            burnFee = 0;
         }
-    }
 
-    function _transferStandard(
-        address sender,
-        address recipient,
-        uint256 tAmount
-    ) private {
-        (
-            uint256 rAmount,
-            uint256 rTransferAmount,
-            uint256 rFee,
-            uint256 tTransferAmount,
-            uint256 tFee
-        ) = _getValues(tAmount);
-        _rOwned[sender] = _rOwned[sender].sub(rAmount);
-        _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);
-        _reflectFee(rFee, tFee);
-        emit Transfer(sender, recipient, tTransferAmount);
-    }
+        uint256 totalFeePercentage = txFee + burnFee;
 
-    function _transferToExcluded(
-        address sender,
-        address recipient,
-        uint256 tAmount
-    ) private {
-        (
-            uint256 rAmount,
-            uint256 rTransferAmount,
-            uint256 rFee,
-            uint256 tTransferAmount,
-            uint256 tFee
-        ) = _getValues(tAmount);
+        // remove tokens from sender account
         _rOwned[sender] = _rOwned[sender].sub(rAmount);
-        _tOwned[recipient] = _tOwned[recipient].add(tTransferAmount);
-        _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);
-        _reflectFee(rFee, tFee);
-        emit Transfer(sender, recipient, tTransferAmount);
-    }
 
-    function _transferFromExcluded(
-        address sender,
-        address recipient,
-        uint256 tAmount
-    ) private {
-        (
-            uint256 rAmount,
-            uint256 rTransferAmount,
-            uint256 rFee,
-            uint256 tTransferAmount,
-            uint256 tFee
-        ) = _getValues(tAmount);
-        _tOwned[sender] = _tOwned[sender].sub(tAmount);
-        _rOwned[sender] = _rOwned[sender].sub(rAmount);
+        // add tokens minus treasuryTax (3%) to the recipient address
         _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);
-        _reflectFee(rFee, tFee);
-        emit Transfer(sender, recipient, tTransferAmount);
-    }
 
-    function _transferBothExcluded(
-        address sender,
-        address recipient,
-        uint256 tAmount
-    ) private {
-        (
-            uint256 rAmount,
-            uint256 rTransferAmount,
-            uint256 rFee,
-            uint256 tTransferAmount,
-            uint256 tFee
-        ) = _getValues(tAmount);
-        _tOwned[sender] = _tOwned[sender].sub(tAmount);
-        _rOwned[sender] = _rOwned[sender].sub(rAmount);
-        _tOwned[recipient] = _tOwned[recipient].add(tTransferAmount);
-        _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);
-        _reflectFee(rFee, tFee);
+        // add treasuryTax to treasury account
+        _rOwned[EMAXTreasury] = _rOwned[EMAXTreasury].add(rFee);
+
+        // if address is excluded (blacklisted IP),  then tokenomics dont apply.
+        if (_isExcluded[sender]) {
+            _tOwned[sender] = _tOwned[sender].sub(amount);
+        }
+        if (_isExcluded[recipient]) {
+            _tOwned[recipient] = _tOwned[recipient].add(amount);
+        }
+
+        // emit transfer
         emit Transfer(sender, recipient, tTransferAmount);
+
+        // Burn
+        uint256 tBurn = amount.mul(burnFee).div(100);
+        uint256 rBurn = tBurn.mul(currentRate);
+        _burnTokens(sender, tBurn, rBurn);
     }
 
     function _reflectFee(uint256 rFee, uint256 tFee) private {
@@ -296,7 +303,8 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
         _tFeeTotal = _tFeeTotal.add(tFee);
     }
 
-    function _getValues(uint256 tAmount)
+    // 'r' space conversion
+    function _getValues(uint256 tAmount, uint256 totalFeePercentage)
         private
         view
         returns (
@@ -307,54 +315,25 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
             uint256
         )
     {
-        (uint256 tTransferAmount, uint256 tFee) = _getTValues(tAmount);
         uint256 currentRate = _getRate();
-        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee) = _getRValues(
-            tAmount,
-            tFee,
-            currentRate
-        );
-        return (rAmount, rTransferAmount, rFee, tTransferAmount, tFee);
-    }
-
-    function _getTValues(uint256 tAmount)
-        private
-        pure
-        returns (uint256, uint256)
-    {
-        uint256 tFee = tAmount.div(100).mul(2);
+        uint256 tFee = tAmount.mul(3).div(100);
         uint256 tTransferAmount = tAmount.sub(tFee);
-        return (tTransferAmount, tFee);
-    }
-
-    function _getRValues(
-        uint256 tAmount,
-        uint256 tFee,
-        uint256 currentRate
-    )
-        private
-        pure
-        returns (
-            uint256,
-            uint256,
-            uint256
-        )
-    {
         uint256 rAmount = tAmount.mul(currentRate);
         uint256 rFee = tFee.mul(currentRate);
         uint256 rTransferAmount = rAmount.sub(rFee);
-        return (rAmount, rTransferAmount, rFee);
+        return (rAmount, rTransferAmount, rFee, tTransferAmount, tFee);
     }
 
-    function _getRate() private view returns (uint256) {
-        (uint256 rSupply, uint256 tSupply) = _getCurrentSupply();
+    function _getRate() public view returns (uint256) {
+        (uint256 rSupply, uint256 tSupply) = getCurrentSupply();
         return rSupply.div(tSupply);
     }
 
-    function _getCurrentSupply() private view returns (uint256, uint256) {
+    function getCurrentSupply() public view returns (uint256, uint256) {
         uint256 rSupply = _rTotal;
         uint256 tSupply = _tTotal;
-        for (uint256 i = 0; i < _excluded.length; i++) {
+        uint256 excludedLength = _excluded.length;
+        for (uint256 i = 0; i < excludedLength; i++) {
             if (
                 _rOwned[_excluded[i]] > rSupply ||
                 _tOwned[_excluded[i]] > tSupply
@@ -366,8 +345,7 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
         return (rSupply, tSupply);
     }
 
-    //------------------- Owner
-
+    //------------------- Owner Only Functions
     function excludeAccount(address account) external onlyOwner {
         require(!_isExcluded[account], "Account is already excluded");
         if (_rOwned[account] > 0) {
@@ -388,5 +366,32 @@ abstract contract REFLECT is Context, IERC20, ProxyOwnable {
                 break;
             }
         }
+    }
+
+    //------------------- Burn Baby Burn
+    function _burnTokens(
+        address sender,
+        uint256 tBurn,
+        uint256 rBurn
+    ) internal {
+        require(
+            _rOwned[sender] >= rBurn,
+            "ERC20: burn amount exceeds rBalance"
+        );
+        // subtract from sender
+        _rOwned[sender] = _rOwned[sender].sub(rBurn);
+        // add to burnAddress
+        _rOwned[_burnAddress] = _rOwned[_burnAddress].add(rBurn);
+        // if excluded...
+        if (_isExcluded[_burnAddress])
+            _tOwned[_burnAddress] = _tOwned[_burnAddress].add(tBurn);
+
+        //emit Transfer(sender, _burnAddress, tBurn);
+
+        // reduce _rtotal ---> changes 'currentRate'
+        _rTotal = _rTotal - rBurn;
+
+        //update _burnFeeTotal
+        _burnFeeTotal = _burnFeeTotal.add(tBurn);
     }
 }
