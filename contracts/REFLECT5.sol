@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-only
+
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/Context.sol";
@@ -15,12 +16,10 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
     mapping(address => uint256) private _tOwned;
     mapping(address => mapping(address => uint256)) private _allowances;
 
-    //blacklist IPs
     mapping(address => bool) private _isExcluded;
     address[] private _excluded;
 
     uint256 private constant MAX = ~uint256(0);
-    // V should be uint256 private _totalSupply and if a new variable totalSupply was created to overwrite this one, all user balances would be lost on upgrade.
     uint256 private constant _tTotal = 2000000000 * 10**6 * 10**18;
     uint256 private _rTotal;
     uint256 private _tFeeTotal;
@@ -45,9 +44,13 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
     address public constant EMAXExpense =
         0x87Ba6c0B3E06d4B9Ae4E5c5752D8E94AeE135470;
     address public constant EMAXTreasury =
-        0xC2bD4Fa73015C821489259CF463DaFD68fFFF37e; // rinkeby gnosis safe
+        0x5EA06A2bE857D35D5E545b2bF54b2d387bB8B4bA;
     address public constant EMAXEvents =
         0x80dF68fA5275D0e1EE83aA4160f0b82033597f51;
+    address public constant Unicrypt =
+        0xDba68f07d1b7Ca219f78ae8582C213d975c25cAf;
+    address public constant UniswapLP =
+        0xb6CA52c7916ad7960C12Dc489FD93E5Af7cA257f; // token pair contract
 
     mapping(address => bool) public whitelist;
 
@@ -56,7 +59,7 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
         ownerInitialize();
         _rTotal = (MAX - (MAX % _tTotal));
         _name = "EthereumMax";
-        _symbol = "eMax";
+        _symbol = "EMAX";
         _decimals = 18;
 
         _rOwned[_msgSender()] = _rTotal;
@@ -75,10 +78,8 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
         return _decimals;
     }
 
-    function totalSupply() public pure override returns (uint256) {
-        // ideally, but we are restricted to only upgrading a pure function
-        // return _tTotal.sub(_burnFeeTotal);
-        return _tTotal;
+    function totalSupply() public view override returns (uint256) {
+        return _tTotal.sub(_burnFeeTotal);
     }
 
     function balanceOf(address account) public view override returns (uint256) {
@@ -173,7 +174,7 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
             !_isExcluded[sender],
             "Excluded addresses cannot call this function"
         );
-        (uint256 rAmount, , , , ) = getValues(tAmount);
+        (uint256 rAmount, , , , ) = _getValues(tAmount, 0);
         _rOwned[sender] = _rOwned[sender].sub(rAmount);
         _rTotal = _rTotal.sub(rAmount);
         _tFeeTotal = _tFeeTotal.add(tAmount);
@@ -186,10 +187,10 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
     {
         require(tAmount <= _tTotal, "Amount must be less than supply");
         if (!deductTransferFee) {
-            (uint256 rAmount, , , , ) = getValues(tAmount);
+            (uint256 rAmount, , , , ) = _getValues(tAmount, 0);
             return rAmount;
         } else {
-            (, uint256 rTransferAmount, , , ) = getValues(tAmount);
+            (, uint256 rTransferAmount, , , ) = _getValues(tAmount, 0);
             return rTransferAmount;
         }
     }
@@ -229,21 +230,20 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
         require(amount > 0, "Transfer amount must be greater than zero");
 
         // transaction fees
-        //uint256 txFee = 6; // reflection fee
-        uint256 burnFee = 3; // burn fee
+        uint256 txFee = 0;
+        uint256 burnFee = 6;
 
+        // get amounts in 'r' space
         (
             uint256 rAmount,
             uint256 rTransferAmount,
             uint256 rFee,
             uint256 tTransferAmount,
-            uint256 tFee // 6% reflective
-        ) = getValues(amount);
-
+            uint256 tFee // 3% treasury
+        ) = _getValues(amount, burnFee);
+        // get current rate
         uint256 currentRate = _getRate();
-
-        // Whitelisted the deployer
-        // more incoming!
+        // is sender or reciever whitelisted? If so remove 3% to treasury and 6% burn
         if (
             sender == bitforex ||
             recipient == bitforex ||
@@ -256,31 +256,42 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
             sender == EMAXEvents ||
             recipient == EMAXEvents ||
             sender == EMAXMint ||
-            recipient == EMAXMint
+            recipient == EMAXMint ||
+            sender == UniswapLP ||
+            recipient == UniswapLP ||
+            sender == Unicrypt ||
+            recipient == Unicrypt
         ) {
             tFee = 0;
             rFee = 0;
-            tTransferAmount = 0;
+            tTransferAmount = amount;
             rAmount = amount * currentRate;
             rTransferAmount = rAmount;
             burnFee = 0;
         }
 
+        uint256 totalFeePercentage = txFee + burnFee;
+
+        // remove tokens from sender account
         _rOwned[sender] = _rOwned[sender].sub(rAmount);
 
+        // add tokens minus treasuryTax (3%) to the recipient address
         _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);
 
+        // add treasuryTax to treasury account
+        _rOwned[EMAXTreasury] = _rOwned[EMAXTreasury].add(rFee);
+
+        // if address is excluded (blacklisted IP),  then tokenomics dont apply.
         if (_isExcluded[sender]) {
             _tOwned[sender] = _tOwned[sender].sub(amount);
         }
         if (_isExcluded[recipient]) {
-            _tOwned[recipient] = _tOwned[recipient].add(tTransferAmount);
+            _tOwned[recipient] = _tOwned[recipient].add(amount);
         }
 
-        // reflect fees to all balances. Subtract from _rTotal.
-        _reflectFee(rFee, tFee);
         // emit transfer
         emit Transfer(sender, recipient, tTransferAmount);
+
         // Burn
         uint256 tBurn = amount.mul(burnFee).div(100);
         uint256 rBurn = tBurn.mul(currentRate);
@@ -292,13 +303,9 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
         _tFeeTotal = _tFeeTotal.add(tFee);
     }
 
-    // Reflect discrepancies
-    // 1. _getTValues --> tfee, tTransferAmount
-    // 2. _getRValues --> rAmount, rtransferAmount, rFee
-    // 3. uint256 totalFeePercentage removed from params. Not needed. 6% baked in to 'tFee' in _getTValues, which is used to calculate _getRvalues.
-    // These functions have been recreated below this function...
-    function getValues(uint256 tAmount)
-        public
+    // 'r' space conversion
+    function _getValues(uint256 tAmount, uint256 totalFeePercentage)
+        private
         view
         returns (
             uint256,
@@ -309,55 +316,12 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
         )
     {
         uint256 currentRate = _getRate();
-
-        (uint256 tTransferAmount, uint256 tFee) = _getTValues(tAmount);
-        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee) = _getRValues(
-            tAmount,
-            tFee,
-            currentRate
-        );
-        //uint256 totalFee = tAmount.mul(totalFeePercentage).div(100);
-
-        //uint256 tTransferAmount = tAmount.sub(totalFee); // this line subracts fee from the total being sent... I dont believe this is desirable.
-
-        //uint256 rAmount = tAmount.mul(currentRate);
-
-        //uint256 rFee = totalFee.mul(currentRate);
-        //uint256 rTransferAmount = rAmount.sub(rFee);
-        return (rAmount, rTransferAmount, rFee, tTransferAmount, tFee);
-    }
-
-    // NEW
-    function _getTValues(uint256 tAmount)
-        private
-        pure
-        returns (uint256, uint256)
-    {
-        // reflective protocol is 1% hence the div(100), added in mul(6)
-        // eMax is 6%
-        uint256 tFee = tAmount.mul(6).div(100);
+        uint256 tFee = tAmount.mul(3).div(100);
         uint256 tTransferAmount = tAmount.sub(tFee);
-        return (tTransferAmount, tFee);
-    }
-
-    // NEW
-    function _getRValues(
-        uint256 tAmount,
-        uint256 tFee,
-        uint256 currentRate
-    )
-        private
-        pure
-        returns (
-            uint256,
-            uint256,
-            uint256
-        )
-    {
         uint256 rAmount = tAmount.mul(currentRate);
         uint256 rFee = tFee.mul(currentRate);
         uint256 rTransferAmount = rAmount.sub(rFee);
-        return (rAmount, rTransferAmount, rFee);
+        return (rAmount, rTransferAmount, rFee, tTransferAmount, tFee);
     }
 
     function _getRate() public view returns (uint256) {
@@ -378,13 +342,11 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
             tSupply = tSupply.sub(_tOwned[_excluded[i]]);
         }
         if (rSupply < _rTotal.div(_tTotal)) return (_rTotal, _tTotal);
-
         return (rSupply, tSupply);
     }
 
     //------------------- Owner Only Functions
-
-    function excludeAccount(address account) external {
+    function excludeAccount(address account) external onlyOwner {
         require(!_isExcluded[account], "Account is already excluded");
         if (_rOwned[account] > 0) {
             _tOwned[account] = tokenFromReflection(_rOwned[account]);
@@ -393,7 +355,7 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
         _excluded.push(account);
     }
 
-    function includeAccount(address account) external {
+    function includeAccount(address account) external onlyOwner {
         require(_isExcluded[account], "Account is already excluded");
         for (uint256 i = 0; i < _excluded.length; i++) {
             if (_excluded[i] == account) {
@@ -407,7 +369,6 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
     }
 
     //------------------- Burn Baby Burn
-    // not using the _burn function in IERC20 because that doesnt take into account r & t values.
     function _burnTokens(
         address sender,
         uint256 tBurn,
@@ -417,23 +378,20 @@ contract REFLECT5 is Context, IERC20, ProxyOwnable {
             _rOwned[sender] >= rBurn,
             "ERC20: burn amount exceeds rBalance"
         );
-
-        _rOwned[sender] = _rOwned[sender].sub(rBurn); // line added burn was only being added to burn address, not subtracted from senders account.
-
+        // subtract from sender
+        _rOwned[sender] = _rOwned[sender].sub(rBurn);
+        // add to burnAddress
         _rOwned[_burnAddress] = _rOwned[_burnAddress].add(rBurn);
-
+        // if excluded...
         if (_isExcluded[_burnAddress])
             _tOwned[_burnAddress] = _tOwned[_burnAddress].add(tBurn);
 
-        //emit Transfer(sender, _burnAddress, tBurn); // this produces double transfer in etherscan. Traditional ERC20s use the _burn() functuion which etherscan ignores transfers from.
+        //emit Transfer(sender, _burnAddress, tBurn);
 
-        // reduce _tTotal, but not possible without bricking the 'Max Total Supply' etherscan value.
-        //_tTotal = _tTotal - tBurn;
-
-        // reduce _rtotal
+        // reduce _rtotal ---> changes 'currentRate'
         _rTotal = _rTotal - rBurn;
 
-        //update '_burnFeeTotal' for total supply function to be accurate.
+        //update _burnFeeTotal
         _burnFeeTotal = _burnFeeTotal.add(tBurn);
     }
 }
