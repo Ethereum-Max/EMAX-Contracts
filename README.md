@@ -8,7 +8,7 @@
 
 
 ## Deploying To Test Net
-For local testing comment out initializer function and uncomment constructor. Also, remove ProxyOwnable inheritance. Revert to the initializer method when migrating with truffle to a testnet or mainnet.
+For local testing comment out initializer function and uncomment constructor. Also, remove ProxyOwnable inheritance. Revert to the initializer method when migrating with truffle to a testnet or mainnet. Further reading on openZeppelin upgrade contracts and the use of `unsafeAllow: ['delegatecall']` can be found here: https://docs.openzeppelin.com/upgrades-plugins/1.x/ and https://github.com/OpenZeppelin/openzeppelin-upgrades/issues/455.
 
 * **_Single line view_**
 	* `git pull --all; npm install; truffle compile; npx truffle migrate --compile-all --network ropsten --reset`
@@ -32,7 +32,7 @@ For local testing comment out initializer function and uncomment constructor. Al
 - `instance.transfer(ethers.utils.getAddress("<toAddress>"), ethers.utils.parseEther("amount"))`
 - `instance.<VariableName>.call().then(function (res) {console.log(res)})`
 
-#### generating Uniswap Pair contract address fro testing
+#### generating Uniswap Pair contract address for testing
 
 ```
 address factory = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
