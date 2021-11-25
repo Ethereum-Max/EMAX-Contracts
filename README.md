@@ -122,14 +122,9 @@ Update the `networks` json object to ensure it has the following definitions for
       "address": "0x8E64f15F1D8cF6743558F916befa06E41E68224B",
       "transactionHash": "0x6b2285ae58213b1938fe139485d5d65a938fcd85eed1dddbc24a563763ef89d4"
     },
-
    ...
-
 }
-
 ```
-
-
 
 
 ## Other Notes

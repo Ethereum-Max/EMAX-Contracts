@@ -8,5 +8,6 @@ module.exports = async function (deployer) {
     const instance = await upgradeProxy(deployed.address, EMaxCoin5, { deployer, unsafeAllow: ['delegatecall'] });
     console.log("Upgraded to instance v5: ", instance.address)
 
-    // await upgradeProxy("0x15874d65e649880c2614e7a480cb7c9A55787FF6", EMaxCoin4, {deployer});
+    //const instance = await upgradeProxy("0xEBF5D45F982F1618F97C514609B826bd9d47A192", EMaxCoin5, { deployer, unsafeAllow: ['delegatecall'] });
+    //console.log("Upgraded to instance v5: ", instance.address)
 };

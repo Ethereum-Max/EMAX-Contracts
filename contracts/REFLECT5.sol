@@ -46,6 +46,10 @@ abstract contract REFLECT5 is Context, IERC20, ProxyOwnable {
     //0x5EA06A2bE857D35D5E545b2bF54b2d387bB8B4bA;
     address public constant EMAXEvents =
         0x80dF68fA5275D0e1EE83aA4160f0b82033597f51;
+
+    mapping(address => bool) public whitelist;
+
+    // v5 new whitelist addresses
     address public constant EMAXMint =
         0x15874d65e649880c2614e7a480cb7c9A55787FF6; // mainnet contract
     address public constant Unicrypt =
@@ -55,12 +59,11 @@ abstract contract REFLECT5 is Context, IERC20, ProxyOwnable {
     // UNCOMMENT BELOW FOR MAINNET
     //address public constant UniswapLP =
     //0xb6CA52c7916ad7960C12Dc489FD93E5Af7cA257f; // token pair contract
+    address public UniswapLP; // token pair contract
     address public constant DexTrade1 =
         0xc275E2d289Cf809710f151eFdD5465394864Ef78;
     address public constant DexTrade2 =
         0xBDAfE5F72AbF62048C2D5c7Dc33f59FC921D83fb;
-
-    mapping(address => bool) public whitelist;
 
     // constructor () public {
     function initialize() public initializer {
@@ -237,8 +240,7 @@ abstract contract REFLECT5 is Context, IERC20, ProxyOwnable {
         require(recipient != address(0), "ERC20: transfer to the zero address");
         require(amount > 0, "Transfer amount must be greater than zero");
 
-        // tx fee redirected to treasury for 3% of transaction value.
-        //uint256 txFee = 6;
+        // tx fee redirected to treasury for 3% of transaction value. Chnaged from 6% to 3%
         uint256 txFee = 3;
         // burn fee change to 6%
         uint256 burnFee = 6;
@@ -257,8 +259,8 @@ abstract contract REFLECT5 is Context, IERC20, ProxyOwnable {
             recipient == EMAXEvents ||
             sender == EMAXMint ||
             recipient == EMAXMint ||
-            // sender == UniswapLP ||
-            recipient == UniswapLP || // tokenomics only apply to a transfer out of UniswapLP.
+            sender == UniswapLP ||
+            // recipient == UniswapLP || // tokenomics only apply to a transfer into UniswapLP contract.
             sender == Unicrypt ||
             recipient == Unicrypt ||
             sender == Coinsbit ||
@@ -272,17 +274,23 @@ abstract contract REFLECT5 is Context, IERC20, ProxyOwnable {
             burnFee = 0;
         }
 
-        //uint256 totalFeePercentage = txFee + burnFee;
-        uint256 totalFeePercentage = txFee;
+        uint256 totalFeePercentage = txFee + burnFee;
         (
             uint256 rAmount,
             uint256 rTransferAmount,
             uint256 tTransferAmount,
             uint256 currentRate
         ) = _getValues(amount, totalFeePercentage);
-        _rOwned[sender] = _rOwned[sender].sub(rAmount);
-        _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);
 
+        // 3% added to treasury, unless whitelisted.
+        uint256 tFee = amount.mul(txFee).div(100);
+        uint256 rFee = tFee.mul(currentRate);
+        _rOwned[EMAXTreasury] = _rOwned[EMAXTreasury].add(rFee);
+        // senderAmountRemaining =  balance - (rAmount)
+        _rOwned[sender] = _rOwned[sender].sub(rAmount);
+        // recipientBalance = recipientBalance + rTransferAmount
+        _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);
+        //excluded scenario
         if (_isExcluded[sender]) {
             _tOwned[sender] = _tOwned[sender].sub(amount);
         }
@@ -295,15 +303,13 @@ abstract contract REFLECT5 is Context, IERC20, ProxyOwnable {
         //uint256 rFee = tFee.mul(currentRate);
         //_reflectFee(rFee, tFee);
 
-        //3% added to treasury
-        uint256 tFee = amount.mul(totalFeePercentage).div(100);
-        uint256 rFee = tFee.mul(currentRate);
-        _rOwned[EMAXTreasury] = _rOwned[EMAXTreasury].add(rFee);
-
         emit Transfer(sender, recipient, tTransferAmount);
 
+        // Calculate burned tokens
         uint256 tBurn = amount.mul(burnFee).div(100); // only burn if not whitelisted.
         uint256 rBurn = tBurn.mul(currentRate);
+        // subtract from senders balance
+        // _rOwned[sender] = _rOwned[sender].sub(rBurn);  // produces stack to deep error, need combine with line above where it subtracts rAmount from sender.
         _burnTokens(sender, tBurn, rBurn);
     }
 
@@ -385,10 +391,17 @@ abstract contract REFLECT5 is Context, IERC20, ProxyOwnable {
         uint256 tBurn,
         uint256 rBurn
     ) internal {
+        // require the sender to have the balance to be burned.
+        require(_rOwned[sender] >= rBurn, "EMAX: burn amount exceeds rBalance");
+
+        // subtract from senders balance was here, moved to transfer function so it doesnt double emit
+
+        // add to _burnAddress balance
         _rOwned[_burnAddress] = _rOwned[_burnAddress].add(rBurn);
+        // if excluded
         if (_isExcluded[_burnAddress])
             _tOwned[_burnAddress] = _tOwned[_burnAddress].add(tBurn);
-
+        // add to burn fee total
         _burnFeeTotal = _burnFeeTotal.add(tBurn);
     }
 
@@ -397,8 +410,6 @@ abstract contract REFLECT5 is Context, IERC20, ProxyOwnable {
     // Testing Only!!!
     // rinkeby uniswap pair generation --------------
     // Below is only for rinkeby testing REMOVE FOR MAINNET
-    address public UniswapLP; // token pair contract
-
     function getPair() public onlyOwner {
         address factory = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
         address token0 = address(this); // mainnet: eMax, rinkeby: address(this)
