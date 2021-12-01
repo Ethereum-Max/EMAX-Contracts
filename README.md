@@ -36,7 +36,7 @@ For local testing comment out initializer function and uncomment constructor. Al
 
 ```
 address factory = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
-address token0 = 0x15874d65e649880c2614e7a480cb7c9A55787FF6; // mainnet: eMax, rinkeby: eMax
+address token0 = 0x15874d65e649880c2614e7a480cb7c9A55787FF6; // mainnet: eMax, rinkeby: address(this)
 address token1 = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; // mainnet: wETH (0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2), rinkeby: wETH (0xc778417E063141139Fce010982780140Aa0cD5Ab)
 
 address pair = address(uint160(uint(keccak256(abi.encodePacked(
@@ -122,14 +122,9 @@ Update the `networks` json object to ensure it has the following definitions for
       "address": "0x8E64f15F1D8cF6743558F916befa06E41E68224B",
       "transactionHash": "0x6b2285ae58213b1938fe139485d5d65a938fcd85eed1dddbc24a563763ef89d4"
     },
-
    ...
-
 }
-
 ```
-
-
 
 
 ## Other Notes
