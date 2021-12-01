@@ -24,7 +24,7 @@ module.exports = {
       },
       network_id: 3,
       skipDryRun: true,
-      gas: 4000000,      //make sure this gas allocation isn't over 4M, which is the max
+      gas: 4000000,
       gasPrice: 70000000000 // 70 gwei 
     },
 
@@ -43,9 +43,9 @@ module.exports = {
         return new HDWalletProvider(secrets['MAINNET_MNEMONIC'], "https://mainnet.infura.io/v3/" + secrets['API_KEY'])
       },
       network_id: 1,
-      gas: 5000000,
+      gas: 5500000,
       skipDryRun: true,
-      gasPrice: 45000000000 // 45 gwei
+      gasPrice: 125000000000 // 120 gwei // current price
     }
   },
 

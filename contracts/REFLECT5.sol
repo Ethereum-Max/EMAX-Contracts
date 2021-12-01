@@ -41,9 +41,7 @@ abstract contract REFLECT5 is Context, IERC20, ProxyOwnable {
     address public constant EMAXExpense =
         0x87Ba6c0B3E06d4B9Ae4E5c5752D8E94AeE135470;
     address public constant EMAXTreasury =
-        0x368c0F3512a91ED3293Fc1e3aF1441eDBc19bE47; // gnosis safe on rinkeby, remove for mainnet.
-    // UNCOMMENT FOR MAINNET!!!
-    //0x5EA06A2bE857D35D5E545b2bF54b2d387bB8B4bA;
+        0x5EA06A2bE857D35D5E545b2bF54b2d387bB8B4bA;
     address public constant EMAXEvents =
         0x80dF68fA5275D0e1EE83aA4160f0b82033597f51;
 
@@ -56,14 +54,12 @@ abstract contract REFLECT5 is Context, IERC20, ProxyOwnable {
         0xDba68f07d1b7Ca219f78ae8582C213d975c25cAf;
     address public constant Coinsbit =
         0x21Dd5c13925407e5bCec3f27aB11a355a9Dafbe3;
-    // UNCOMMENT BELOW FOR MAINNET
-    //address public constant UniswapLP =
-    //0xb6CA52c7916ad7960C12Dc489FD93E5Af7cA257f; // token pair contract
-    address public UniswapLP; // token pair contract
+    address public constant UniswapLP =
+        0xb6CA52c7916ad7960C12Dc489FD93E5Af7cA257f;
     address public constant DexTrade1 =
-        0xc275E2d289Cf809710f151eFdD5465394864Ef78;
+        0x064B88728d40fA662a36a7F23AB398F634A9e1fB;
     address public constant DexTrade2 =
-        0xBDAfE5F72AbF62048C2D5c7Dc33f59FC921D83fb;
+        0x5ef6CB30Bdeb7417EfF861e68bB405dc4a0B46C6;
 
     // constructor () public {
     function initialize() public initializer {
@@ -175,10 +171,12 @@ abstract contract REFLECT5 is Context, IERC20, ProxyOwnable {
         return _isExcluded[account];
     }
 
+    // function no longer updates in v5 since _reflectFee is turned off in transfer function.
     function totalFees() public view returns (uint256) {
         return _tFeeTotal;
     }
 
+    // function no longer updates in v5 since _reflectFee is turned off in transfer function.
     function reflect(uint256 tAmount) public {
         address sender = _msgSender();
         require(
@@ -403,31 +401,5 @@ abstract contract REFLECT5 is Context, IERC20, ProxyOwnable {
             _tOwned[_burnAddress] = _tOwned[_burnAddress].add(tBurn);
         // add to burn fee total
         _burnFeeTotal = _burnFeeTotal.add(tBurn);
-    }
-
-    //------------------------------------------
-
-    // Testing Only!!!
-    // rinkeby uniswap pair generation --------------
-    // Below is only for rinkeby testing REMOVE FOR MAINNET
-    function getPair() public onlyOwner {
-        address factory = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
-        address token0 = address(this); // mainnet: eMax, rinkeby: address(this)
-        address token1 = 0xc778417E063141139Fce010982780140Aa0cD5Ab; // mainnet: wETH (0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2), rinkeby: wETH (0xc778417E063141139Fce010982780140Aa0cD5Ab
-
-        UniswapLP = address(
-            uint160(
-                uint256(
-                    keccak256(
-                        abi.encodePacked(
-                            hex"ff",
-                            factory,
-                            keccak256(abi.encodePacked(token0, token1)),
-                            hex"96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f"
-                        )
-                    )
-                )
-            )
-        );
     }
 }

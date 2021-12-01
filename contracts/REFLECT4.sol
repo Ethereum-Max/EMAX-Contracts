@@ -41,9 +41,7 @@ abstract contract REFLECT4 is Context, IERC20, ProxyOwnable {
     address public constant EMAXExpense =
         0x87Ba6c0B3E06d4B9Ae4E5c5752D8E94AeE135470;
     address public constant EMAXTreasury =
-        0x368c0F3512a91ED3293Fc1e3aF1441eDBc19bE47; // gnosis safe on rinkeby
-    // UNCOMMENT FOR MAINNET!!!
-    //0x5EA06A2bE857D35D5E545b2bF54b2d387bB8B4bA;
+        0x5EA06A2bE857D35D5E545b2bF54b2d387bB8B4bA;
     address public constant EMAXEvents =
         0x80dF68fA5275D0e1EE83aA4160f0b82033597f51;
 

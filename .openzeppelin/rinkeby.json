@@ -279,6 +279,31 @@
       "address": "0x0dDD3d8fB742D15432ab4B9bA2E48965c6692769",
       "txHash": "0x92ede8a867f3c62f8f0af6517cdef70acc62f5b74f2688b3ad6a28af6483a7e0",
       "kind": "transparent"
+    },
+    {
+      "address": "0x8F1420df83A14d03b16BF2BA10E26378ce3A3a50",
+      "txHash": "0x42e75b05f5dc273eaf33cb934c9f665945845e5fd0ec8ceb4e3a20b0bfa08837",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x19BA63f8E3153E5878aF166690c13608Ed3cbf4C",
+      "txHash": "0xc6b41992b160de7c10186bcc3eff6607a882ae3ae96f82264fdc94f4c6697d1d",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x7f97F3D14880F451d03d08991f1855C171ac9dE0",
+      "txHash": "0x5354b7f09bec66b030b9f0829b301338438bfbc1fc4541c75fdc5b3373a8eeab",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x240BE482f9e9C9ad7140917Cd5a285E890029a14",
+      "txHash": "0x4d62e79b27ecc459a01ceba413bd112ecf579fa34d88c91f1edd0f53e711e57e",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xf99213e6FFa297F6571c10Ca6E2297fAE617f51d",
+      "txHash": "0x79c4aa12ac8037cf0e52e12a0d5aeb3d64709ff4fd47e3c571d84674ed38d42b",
+      "kind": "transparent"
     }
   ],
   "impls": {
@@ -660,73 +685,73 @@
             "contract": "REFLECT4",
             "label": "_rOwned",
             "type": "t_mapping(t_address,t_uint256)",
-            "src": "..\\project:\\contracts\\REFLECT4.sol:17"
+            "src": "..\\project:\\contracts\\REFLECT4.sol:15"
           },
           {
             "contract": "REFLECT4",
             "label": "_tOwned",
             "type": "t_mapping(t_address,t_uint256)",
-            "src": "..\\project:\\contracts\\REFLECT4.sol:18"
+            "src": "..\\project:\\contracts\\REFLECT4.sol:16"
           },
           {
             "contract": "REFLECT4",
             "label": "_allowances",
             "type": "t_mapping(t_address,t_mapping(t_address,t_uint256))",
-            "src": "..\\project:\\contracts\\REFLECT4.sol:19"
+            "src": "..\\project:\\contracts\\REFLECT4.sol:17"
           },
           {
             "contract": "REFLECT4",
             "label": "_isExcluded",
             "type": "t_mapping(t_address,t_bool)",
-            "src": "..\\project:\\contracts\\REFLECT4.sol:21"
+            "src": "..\\project:\\contracts\\REFLECT4.sol:19"
           },
           {
             "contract": "REFLECT4",
             "label": "_excluded",
             "type": "t_array(t_address)dyn_storage",
-            "src": "..\\project:\\contracts\\REFLECT4.sol:22"
+            "src": "..\\project:\\contracts\\REFLECT4.sol:20"
           },
           {
             "contract": "REFLECT4",
             "label": "_rTotal",
             "type": "t_uint256",
-            "src": "..\\project:\\contracts\\REFLECT4.sol:26"
+            "src": "..\\project:\\contracts\\REFLECT4.sol:24"
           },
           {
             "contract": "REFLECT4",
             "label": "_tFeeTotal",
             "type": "t_uint256",
-            "src": "..\\project:\\contracts\\REFLECT4.sol:27"
+            "src": "..\\project:\\contracts\\REFLECT4.sol:25"
           },
           {
             "contract": "REFLECT4",
             "label": "_name",
             "type": "t_string_storage",
-            "src": "..\\project:\\contracts\\REFLECT4.sol:29"
+            "src": "..\\project:\\contracts\\REFLECT4.sol:27"
           },
           {
             "contract": "REFLECT4",
             "label": "_symbol",
             "type": "t_string_storage",
-            "src": "..\\project:\\contracts\\REFLECT4.sol:30"
+            "src": "..\\project:\\contracts\\REFLECT4.sol:28"
           },
           {
             "contract": "REFLECT4",
             "label": "_decimals",
             "type": "t_uint8",
-            "src": "..\\project:\\contracts\\REFLECT4.sol:31"
+            "src": "..\\project:\\contracts\\REFLECT4.sol:29"
           },
           {
             "contract": "REFLECT4",
             "label": "_burnFeeTotal",
             "type": "t_uint256",
-            "src": "..\\project:\\contracts\\REFLECT4.sol:33"
+            "src": "..\\project:\\contracts\\REFLECT4.sol:32"
           },
           {
             "contract": "REFLECT4",
             "label": "whitelist",
             "type": "t_mapping(t_address,t_bool)",
-            "src": "..\\project:\\contracts\\REFLECT4.sol:44"
+            "src": "..\\project:\\contracts\\REFLECT4.sol:48"
           }
         ],
         "types": {
