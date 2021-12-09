@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "./ProxyOwnable.sol";
 
-abstract contract REFLECT5 is Context, IERC20, ProxyOwnable {
+abstract contract REFLECT6 is Context, IERC20, ProxyOwnable {
     using SafeMath for uint256;
     using Address for address;
 
@@ -238,10 +238,10 @@ abstract contract REFLECT5 is Context, IERC20, ProxyOwnable {
         require(recipient != address(0), "ERC20: transfer to the zero address");
         require(amount > 0, "Transfer amount must be greater than zero");
 
-        // tx fee redirected to treasury for 3% of transaction value. Chnaged from 6% to 3%
-        uint256 txFee = 3;
+        // tx fee redirected to treasury for 9% of transaction value. Chnaged from 6% to 9% to account for manual burns bi-monthly.
+        uint256 txFee = 9;
         // burn fee change to 6%
-        uint256 burnFee = 6;
+        //uint256 burnFee = 6;
 
         // Whitelisted the deployer
         if (
@@ -269,10 +269,11 @@ abstract contract REFLECT5 is Context, IERC20, ProxyOwnable {
             recipient == DexTrade2
         ) {
             txFee = 0;
-            burnFee = 0;
+            //burnFee = 0;
         }
 
-        uint256 totalFeePercentage = txFee + burnFee;
+        //uint256 totalFeePercentage = txFee + burnFee;
+        uint256 totalFeePercentage = txFee;
         (
             uint256 rAmount,
             uint256 rTransferAmount,
@@ -304,11 +305,11 @@ abstract contract REFLECT5 is Context, IERC20, ProxyOwnable {
         emit Transfer(sender, recipient, tTransferAmount);
 
         // Calculate burned tokens
-        uint256 tBurn = amount.mul(burnFee).div(100); // only burn if not whitelisted.
-        uint256 rBurn = tBurn.mul(currentRate);
+        //uint256 tBurn = amount.mul(burnFee).div(100); // only burn if not whitelisted.
+        //uint256 rBurn = tBurn.mul(currentRate);
         // subtract from senders balance
         // _rOwned[sender] = _rOwned[sender].sub(rBurn);  // produces stack to deep error, need combine with line above where it subtracts rAmount from sender.
-        _burnTokens(sender, tBurn, rBurn);
+        //_burnTokens(sender, tBurn, rBurn);
     }
 
     function _reflectFee(uint256 rFee, uint256 tFee) private {
@@ -390,7 +391,7 @@ abstract contract REFLECT5 is Context, IERC20, ProxyOwnable {
         uint256 rBurn
     ) internal {
         // require the sender to have the balance to be burned.
-        require(_rOwned[sender] >= rBurn, "EMAX: burn amount exceeds rBalance");
+        //require(_rOwned[sender] >= rBurn, "EMAX: burn amount exceeds rBalance");
 
         // subtract from senders balance was here, moved to transfer function so it doesnt double emit
 

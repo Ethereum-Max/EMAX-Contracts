@@ -1,11 +1,9 @@
-# Ethereum Max
-
+# Ethereum Max ERC20 Smart Contracts
 
 ## PreRequisites
 * Install Chrome, Firefox, Opera
 * Install MetaMask
 * Install NodeJS
-
 
 ## Deploying to Testnet
 For local testing comment out initializer function and uncomment constructor. Also, remove ProxyOwnable inheritance. Revert to the initializer method when migrating with truffle to a testnet or mainnet. 

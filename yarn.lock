@@ -1594,6 +1594,13 @@
   dependencies:
     "follow-redirects" "^1.10.0"
 
+"axios@^0.21.1":
+  "integrity" "sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg=="
+  "resolved" "https://registry.npmjs.org/axios/-/axios-0.21.4.tgz"
+  "version" "0.21.4"
+  dependencies:
+    "follow-redirects" "^1.14.0"
+
 "babel-code-frame@^6.26.0":
   "integrity" "sha1-Y/1D99weO7fONZR9uP42mj9Yx0s="
   "resolved" "https://registry.npmjs.org/babel-code-frame/-/babel-code-frame-6.26.0.tgz"
@@ -2446,6 +2453,11 @@
   "resolved" "https://registry.npmjs.org/circular-json/-/circular-json-0.5.9.tgz"
   "version" "0.5.9"
 
+"circular@^1.0.5":
+  "integrity" "sha1-fad6+Yu96c5LWzWM1Va13e0tMUk="
+  "resolved" "https://registry.npmjs.org/circular/-/circular-1.0.5.tgz"
+  "version" "1.0.5"
+
 "class-is@^1.1.0":
   "integrity" "sha512-rhjH9AG1fvabIDoGRVH587413LPjTZgmDF9fOFCbFJQV4yuocX1mHxxvXI4g3cGwbVY9wAYIoKlg1N79frJKQw=="
   "resolved" "https://registry.npmjs.org/class-is/-/class-is-1.1.0.tgz"
@@ -2467,6 +2479,26 @@
   "version" "3.1.0"
   dependencies:
     "restore-cursor" "^3.1.0"
+
+"cli-logger@^0.5.40":
+  "integrity" "sha1-CX8OEbByx8aYomxH9YiinCC0iws="
+  "resolved" "https://registry.npmjs.org/cli-logger/-/cli-logger-0.5.40.tgz"
+  "version" "0.5.40"
+  dependencies:
+    "circular" "^1.0.5"
+    "cli-util" "~1.1.27"
+
+"cli-regexp@~0.1.0":
+  "integrity" "sha1-a82TsJ+y7RAl0woRVdWZeVSlNRI="
+  "resolved" "https://registry.npmjs.org/cli-regexp/-/cli-regexp-0.1.2.tgz"
+  "version" "0.1.2"
+
+"cli-util@~1.1.27":
+  "integrity" "sha1-QtaeNqBAoyH8nPhRwVE8rcUJMFQ="
+  "resolved" "https://registry.npmjs.org/cli-util/-/cli-util-1.1.27.tgz"
+  "version" "1.1.27"
+  dependencies:
+    "cli-regexp" "~0.1.0"
 
 "cliui@^2.1.0":
   "integrity" "sha1-S0dXYP+AJkx2LDoXGQMukcf+oNE="
@@ -4019,7 +4051,7 @@
   dependencies:
     "is-buffer" "~2.0.3"
 
-"follow-redirects@^1.10.0", "follow-redirects@^1.12.1":
+"follow-redirects@^1.10.0", "follow-redirects@^1.12.1", "follow-redirects@^1.14.0":
   "integrity" "sha512-wtphSXy7d4/OR+MvIFbCVBDzZ5520qV8XfPklSN5QtxuMUJZ+b0Wnst1e1lCDocfzuCkHqj8k0FpZqO+UIaKNA=="
   "resolved" "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.14.5.tgz"
   "version" "1.14.5"
@@ -6284,7 +6316,7 @@
   "resolved" "https://registry.npmjs.org/murmurhash3js-revisited/-/murmurhash3js-revisited-3.0.0.tgz"
   "version" "3.0.0"
 
-"nan@^2.13.2", "nan@^2.14.0", "nan@^2.14.2":
+"nan@^2.11.0", "nan@^2.13.2", "nan@^2.14.2":
   "integrity" "sha512-8ZtvEnA2c5aYCZYd1cvgdnU6cqwixRoYg70xPLWUws5ORTa/lnw+u4amixRS/Ac5U5mQVgp9pnlSUnbNWFaWZQ=="
   "resolved" "https://registry.npmjs.org/nan/-/nan-2.15.0.tgz"
   "version" "2.15.0"
@@ -7173,7 +7205,7 @@
   "resolved" "https://registry.npmjs.org/querystring-es3/-/querystring-es3-0.2.1.tgz"
   "version" "0.2.1"
 
-"querystring@^0.2.0":
+"querystring@^0.2.0", "querystring@^0.2.1":
   "integrity" "sha512-wkvS7mL/JMugcup3/rMitHmd9ecIGd2lhFhK9N3UUQ450h66d1r3Y9nvXzQAW1Lq+wyx61k/1pfKS5KuKiyEbg=="
   "resolved" "https://registry.npmjs.org/querystring/-/querystring-0.2.1.tgz"
   "version" "0.2.1"
@@ -8600,6 +8632,16 @@
     "web3" "1.2.1"
     "websocket" "^1.0.28"
 
+"truffle-plugin-verify@^0.5.18":
+  "integrity" "sha512-yqozlnupddTyabpUETwPZkaNSZWOtfeijy7qaDYlWGOmxfWdI3TYjRsKJVqdLf22BPpE1VK4081RLXXfNbISGg=="
+  "resolved" "https://registry.npmjs.org/truffle-plugin-verify/-/truffle-plugin-verify-0.5.18.tgz"
+  "version" "0.5.18"
+  dependencies:
+    "axios" "^0.21.1"
+    "cli-logger" "^0.5.40"
+    "delay" "^5.0.0"
+    "querystring" "^0.2.1"
+
 "truffle@^5.1.35", "truffle@^5.4.19":
   "integrity" "sha512-PaB8FskyHur/gl2D9Y9R7sB+IlougQSQUku3kva4L6cQuQe1iZaO2e8LMvOMXxLL+a0OMTrpE/JGOsYDiU2ViA=="
   "resolved" "https://registry.npmjs.org/truffle/-/truffle-5.4.19.tgz"
@@ -9565,8 +9607,8 @@
   "version" "1.0.29"
   dependencies:
     "debug" "^2.2.0"
-    "es5-ext" "^0.10.50"
-    "nan" "^2.14.0"
+    "gulp" "^4.0.2"
+    "nan" "^2.11.0"
     "typedarray-to-buffer" "^3.1.5"
     "yaeti" "^0.0.6"
 

@@ -43,10 +43,14 @@ module.exports = {
         return new HDWalletProvider(secrets['MAINNET_MNEMONIC'], "https://mainnet.infura.io/v3/" + secrets['API_KEY'])
       },
       network_id: 1,
-      gas: 5500000,
+      gas: 5000000, // 5 million wei for contract deploy
       skipDryRun: true,
-      gasPrice: 125000000000 // 120 gwei // current price
+      gasPrice: 120000000000 // 120 gwei (120000000000) // current price 
     }
+  },
+
+  api_keys: {
+    etherscan: process.env.MY_ETHERSCAN_API_TOKEN
   },
 
   plugins: [

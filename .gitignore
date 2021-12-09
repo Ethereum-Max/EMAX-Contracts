@@ -7,3 +7,4 @@ secrets.json
 package-lock.json
 build/
 holding/
+yarn.lock
