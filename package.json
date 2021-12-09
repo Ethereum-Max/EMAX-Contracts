@@ -18,7 +18,8 @@
     "solc": "0.8.4",
     "truffle": "^5.4.19",
     "truffle-flattener": "^1.5.0",
-    "truffle-hdwallet-provider": "^1.0.17"
+    "truffle-hdwallet-provider": "^1.0.17",
+    "truffle-plugin-verify": "^0.5.18"
   },
   "devDependencies": {
     "ganache-cli": "^6.12.2"

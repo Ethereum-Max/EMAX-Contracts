@@ -7,3 +7,5 @@ secrets.json
 package-lock.json
 build/
 holding/
+.vscode/
+yarn.lock
