@@ -743,6 +743,260 @@
           }
         }
       }
+    },
+    "fb3271e62cff482d0ad16b5feef7613610c64a14b3eb90577db9f37f2f47d6b9": {
+      "address": "0xEe5FCe913944C3c4559FB0f58aa1C3Fe732782D8",
+      "txHash": "0xb0de0ebf5a6da90995a4cda86ad5c3d9cbf1f2a1b2fd840fdb0c0c877075cc32",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "..\\@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:21"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "..\\@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:26"
+          },
+          {
+            "contract": "ProxyOwnable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "..\\project:\\contracts\\ProxyOwnable.sol:20"
+          },
+          {
+            "contract": "REFLECT7",
+            "label": "_rOwned",
+            "type": "t_mapping(t_address,t_uint256)",
+            "src": "..\\project:\\contracts\\REFLECT7.sol:14"
+          },
+          {
+            "contract": "REFLECT7",
+            "label": "_tOwned",
+            "type": "t_mapping(t_address,t_uint256)",
+            "src": "..\\project:\\contracts\\REFLECT7.sol:15"
+          },
+          {
+            "contract": "REFLECT7",
+            "label": "_allowances",
+            "type": "t_mapping(t_address,t_mapping(t_address,t_uint256))",
+            "src": "..\\project:\\contracts\\REFLECT7.sol:16"
+          },
+          {
+            "contract": "REFLECT7",
+            "label": "_isExcluded",
+            "type": "t_mapping(t_address,t_bool)",
+            "src": "..\\project:\\contracts\\REFLECT7.sol:18"
+          },
+          {
+            "contract": "REFLECT7",
+            "label": "_excluded",
+            "type": "t_array(t_address)dyn_storage",
+            "src": "..\\project:\\contracts\\REFLECT7.sol:19"
+          },
+          {
+            "contract": "REFLECT7",
+            "label": "_rTotal",
+            "type": "t_uint256",
+            "src": "..\\project:\\contracts\\REFLECT7.sol:23"
+          },
+          {
+            "contract": "REFLECT7",
+            "label": "_tFeeTotal",
+            "type": "t_uint256",
+            "src": "..\\project:\\contracts\\REFLECT7.sol:24"
+          },
+          {
+            "contract": "REFLECT7",
+            "label": "_name",
+            "type": "t_string_storage",
+            "src": "..\\project:\\contracts\\REFLECT7.sol:26"
+          },
+          {
+            "contract": "REFLECT7",
+            "label": "_symbol",
+            "type": "t_string_storage",
+            "src": "..\\project:\\contracts\\REFLECT7.sol:27"
+          },
+          {
+            "contract": "REFLECT7",
+            "label": "_decimals",
+            "type": "t_uint8",
+            "src": "..\\project:\\contracts\\REFLECT7.sol:28"
+          },
+          {
+            "contract": "REFLECT7",
+            "label": "_burnFeeTotal",
+            "type": "t_uint256",
+            "src": "..\\project:\\contracts\\REFLECT7.sol:31"
+          },
+          {
+            "contract": "REFLECT7",
+            "label": "whitelist",
+            "type": "t_mapping(t_address,t_bool)",
+            "src": "..\\project:\\contracts\\REFLECT7.sol:47"
+          }
+        ],
+        "types": {
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_mapping(t_address,t_mapping(t_address,t_uint256))": {
+            "label": "mapping(address => mapping(address => uint256))"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)"
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_array(t_address)dyn_storage": {
+            "label": "address[]"
+          },
+          "t_string_storage": {
+            "label": "string"
+          },
+          "t_uint8": {
+            "label": "uint8"
+          }
+        }
+      }
+    },
+    "efdc874da6518bbc7916dde2aa91890e536dcb6adbb6a325dcbfa3425ba551b7": {
+      "address": "0x56a3DF85B1456a7050Ba1F5e1634c63bc3C6E4e2",
+      "txHash": "0x5a25b3803792194d5b933886ef7f117191f51f951bd2b36062cec4587147bb6e",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "..\\@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:21"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "..\\@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:26"
+          },
+          {
+            "contract": "ProxyOwnable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "..\\project:\\contracts\\ProxyOwnable.sol:20"
+          },
+          {
+            "contract": "REFLECT8",
+            "label": "_rOwned",
+            "type": "t_mapping(t_address,t_uint256)",
+            "src": "..\\project:\\contracts\\REFLECT8.sol:14"
+          },
+          {
+            "contract": "REFLECT8",
+            "label": "_tOwned",
+            "type": "t_mapping(t_address,t_uint256)",
+            "src": "..\\project:\\contracts\\REFLECT8.sol:15"
+          },
+          {
+            "contract": "REFLECT8",
+            "label": "_allowances",
+            "type": "t_mapping(t_address,t_mapping(t_address,t_uint256))",
+            "src": "..\\project:\\contracts\\REFLECT8.sol:16"
+          },
+          {
+            "contract": "REFLECT8",
+            "label": "_isExcluded",
+            "type": "t_mapping(t_address,t_bool)",
+            "src": "..\\project:\\contracts\\REFLECT8.sol:18"
+          },
+          {
+            "contract": "REFLECT8",
+            "label": "_excluded",
+            "type": "t_array(t_address)dyn_storage",
+            "src": "..\\project:\\contracts\\REFLECT8.sol:19"
+          },
+          {
+            "contract": "REFLECT8",
+            "label": "_rTotal",
+            "type": "t_uint256",
+            "src": "..\\project:\\contracts\\REFLECT8.sol:23"
+          },
+          {
+            "contract": "REFLECT8",
+            "label": "_tFeeTotal",
+            "type": "t_uint256",
+            "src": "..\\project:\\contracts\\REFLECT8.sol:24"
+          },
+          {
+            "contract": "REFLECT8",
+            "label": "_name",
+            "type": "t_string_storage",
+            "src": "..\\project:\\contracts\\REFLECT8.sol:26"
+          },
+          {
+            "contract": "REFLECT8",
+            "label": "_symbol",
+            "type": "t_string_storage",
+            "src": "..\\project:\\contracts\\REFLECT8.sol:27"
+          },
+          {
+            "contract": "REFLECT8",
+            "label": "_decimals",
+            "type": "t_uint8",
+            "src": "..\\project:\\contracts\\REFLECT8.sol:28"
+          },
+          {
+            "contract": "REFLECT8",
+            "label": "_burnFeeTotal",
+            "type": "t_uint256",
+            "src": "..\\project:\\contracts\\REFLECT8.sol:31"
+          },
+          {
+            "contract": "REFLECT8",
+            "label": "whitelist",
+            "type": "t_mapping(t_address,t_bool)",
+            "src": "..\\project:\\contracts\\REFLECT8.sol:47"
+          }
+        ],
+        "types": {
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_mapping(t_address,t_mapping(t_address,t_uint256))": {
+            "label": "mapping(address => mapping(address => uint256))"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)"
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_array(t_address)dyn_storage": {
+            "label": "address[]"
+          },
+          "t_string_storage": {
+            "label": "string"
+          },
+          "t_uint8": {
+            "label": "uint8"
+          }
+        }
+      }
     }
   }
 }

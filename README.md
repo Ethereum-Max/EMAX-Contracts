@@ -23,7 +23,7 @@ For local testing comment out initializer function and uncomment constructor. Al
 #### Interacting with Testnet contracts
 - `truffle console --network rinkeby`
 - `const {ethers} = require('ethers')` 
-- `const instance = await EMaxCoin5.deployed()` or `let instance = await EMaxCoin5.at("<contractAddress>")`
+- `const instance = await EMaxCoin5.deployed()` or `let instance = await EMaxCoin7.at("<contractAddress>")`
 - `instance.name()`
 - `instance.symbol()`
 - `instance.balanceOf('address')`
