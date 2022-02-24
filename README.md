@@ -89,8 +89,7 @@ Starting migrations...
 ======================
 ```
 
-#### Things to know:
-
+#### Mainnet Deploying:
 
 1.  `Error: Contract at <0xADDRESS> doesn't look like an EIP 1967 proxy`
 
@@ -101,16 +100,15 @@ Fix:  Look at the migration script this failed on, and either use the `await EMa
 Fix:  hardcode the address instead of `deployed.address`, there is a commented out example in `4_deploy_burn.js`
 
 
-3.  The migration starts back at step 1_initial_migration.js
+3.  IF THE MIGRATION STARTS BACK AT STEP 1_initial_migration.js...
 
-Openzeppelin uses data within the `build/contracts/Migrations.json` file.  
+Openzeppelin uses data within the `build/contracts/Migrations.json` file.
 
 This file has a section called `networks`.  As defined in `truffle.config`, mainnet is `network: 1`.  Ropsten is `network:3` and the below still holds (just update )
 
+Update the `networks` json object to ensure it has the following definitions for `network:1`
 
 The source of this information is etherscan - the first transaction made by the origin wallet was to create the migration script when the contract was originally deployed, so we need to use that address and transaction hash.
-
-Update the `networks` json object to ensure it has the following definitions for `network:1`
 
 ```
 "networks": {
